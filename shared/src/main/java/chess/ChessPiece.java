@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Represents a single chess piece
@@ -56,18 +57,100 @@ public class ChessPiece {
             return kingMoves(board, myPosition);
         } else if (currentPiece.getPieceType()==PieceType.QUEEN){
             return queenMoves(board, myPosition);
+        } else if (currentPiece.getPieceType()==PieceType.ROOK){
+            return rookMoves(board,myPosition);
         } else{
             Collection<ChessMove> moves = new ArrayList<>();
             return moves;
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChessPiece that = (ChessPiece) o;
+        return pieceColor == that.pieceColor && type == that.type;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pieceColor, type);
+    }
+
     public Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> moves=new ArrayList<>();
         return moves;
     }
-    public Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition position){
+    public Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition){
         Collection<ChessMove> moves=new ArrayList<>();
         return moves;
     }
+
+    public Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition){
+        Collection<ChessMove> moves=new ArrayList<>();
+        ChessGame.TeamColor color=board.getBoard()[myPosition.getRow()][myPosition.getColumn()].getTeamColor();
+        int i= myPosition.getRow()+1;
+        while (i<8){
+            if (board.getBoard()[i][myPosition.getColumn()]==null||
+                    board.getBoard()[i][myPosition.getColumn()].getTeamColor()!=color) {
+                ChessPosition newPosition = new ChessPosition(i, myPosition.getColumn());
+                moves.add(new ChessMove(myPosition, newPosition, null));
+                i++;
+            } else if (board.getBoard()[i][myPosition.getColumn()].getTeamColor()!=color) {
+                ChessPosition newPosition = new ChessPosition(i, myPosition.getColumn());
+                moves.add(new ChessMove(myPosition, newPosition, null));
+                i=8;
+            } else {
+                i=8;
+            }
+        }
+        i=myPosition.getRow()-1;
+        while (i>=0){
+            if (board.getBoard()[i][myPosition.getColumn()]==null||
+                    board.getBoard()[i][myPosition.getColumn()].getTeamColor()!=color){
+                ChessPosition newPosition=new ChessPosition(i,myPosition.getColumn());
+                moves.add(new ChessMove (myPosition, newPosition, null));
+                i--;
+            } else if (board.getBoard()[i][myPosition.getColumn()].getTeamColor()!=color) {
+                ChessPosition newPosition = new ChessPosition(i, myPosition.getColumn());
+                moves.add(new ChessMove(myPosition, newPosition, null));
+                i=-1;
+            } else {
+                i=-1;
+            }
+        }
+        i=myPosition.getColumn()+1;
+        while (i<8){
+            if (board.getBoard()[myPosition.getRow()][i]==null) {
+                ChessPosition newPosition = new ChessPosition(myPosition.getRow(), i);
+                moves.add(new ChessMove(myPosition, newPosition, null));
+                i++;
+            } else if(board.getBoard()[myPosition.getRow()][i].getTeamColor()!=color) {
+                ChessPosition newPosition = new ChessPosition(myPosition.getRow(), i);
+                moves.add(new ChessMove(myPosition, newPosition, null));
+                i=8;
+            } else {
+                i=8;
+            }
+
+        }
+        i=myPosition.getColumn()-1;
+        while (i>=0){
+            if (board.getBoard()[myPosition.getRow()][i]==null){
+                ChessPosition newPosition=new ChessPosition(myPosition.getRow(),i);
+                moves.add(new ChessMove (myPosition, newPosition, null));
+                i--;
+            } else if(board.getBoard()[myPosition.getRow()][i].getTeamColor()!=color){
+                ChessPosition newPosition=new ChessPosition(myPosition.getRow(),i);
+                moves.add(new ChessMove (myPosition, newPosition, null));
+                i=-1;
+            }else {
+                i=-1;
+            }
+        }
+        return moves;
+    }
+
 }
