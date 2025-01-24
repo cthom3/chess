@@ -96,6 +96,10 @@ public class ChessPiece {
                 if (board.getBoard()[i][j]==null) {
                     ChessPosition newPosition = new ChessPosition(i+1, j+1);
                     moves.add(new ChessMove(myPosition, newPosition, null));
+                    if (i==5 && board.getBoard()[i-1][j]==null) {
+                        ChessPosition newPositionI = new ChessPosition(i , j + 1);
+                        moves.add(new ChessMove(myPosition, newPositionI, null));
+                    }
                 } if ((j-1)>=0 && board.getBoard()[i][j-1]!=null){
                     if (board.getBoard()[i][j-1].getTeamColor()==enemy) {
                         ChessPosition newPosition = new ChessPosition(i+1, j);
@@ -132,13 +136,6 @@ public class ChessPiece {
                     }
                 }
             }
-            i-=1;
-            if (i==6 && j>=0){
-                if (board.getBoard()[i][j]==null) {
-                    ChessPosition newPosition = new ChessPosition(i+1, j+1);
-                    moves.add(new ChessMove(myPosition, newPosition, null));
-                }
-            }
         } else if (color==ChessGame.TeamColor.WHITE){
             ChessGame.TeamColor enemy=ChessGame.TeamColor.BLACK;
             int i=myPosition.getRow()+1;
@@ -146,6 +143,10 @@ public class ChessPiece {
                 if (board.getBoard()[i][j]==null) {
                     ChessPosition newPosition = new ChessPosition(i+1, j+1);
                     moves.add(new ChessMove(myPosition, newPosition, null));
+                    if (i==2 && board.getBoard()[i+1][j]==null) {
+                        ChessPosition newPositionI = new ChessPosition(i+2 , j + 1);
+                        moves.add(new ChessMove(myPosition, newPositionI, null));
+                    }
                 } if ((j-1)>=0 && board.getBoard()[i][j-1]!=null){
                     if (board.getBoard()[i][j-1].getTeamColor()==enemy){
                         ChessPosition newPosition = new ChessPosition(i+1, j);
@@ -182,10 +183,9 @@ public class ChessPiece {
                     }
                 }
             }
-            i+=1;
-            if (i==1 && j<8){
-                if (board.getBoard()[i][j]==null) {
-                    ChessPosition newPosition = new ChessPosition(i+1, j+1);
+            if (i==1){
+                if (board.getBoard()[i+2][j]==null) {
+                    ChessPosition newPosition = new ChessPosition(i+3, j+1);
                     moves.add(new ChessMove(myPosition, newPosition, null));
                 }
             }
