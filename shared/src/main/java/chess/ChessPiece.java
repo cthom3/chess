@@ -89,6 +89,11 @@ public class ChessPiece {
     }
     public Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition){
         Collection<ChessMove> moves=new ArrayList<>();
+        for (ChessMove rMove: rookMoves(board,myPosition)){
+            moves.add(rMove);
+        } for (ChessMove bMove: bishopMoves(board, myPosition)){
+            moves.add(bMove);
+        }
         return moves;
     }
 
