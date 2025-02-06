@@ -79,7 +79,15 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessBoard squares=getBoard();
+        for (ChessPiece square:squares){
+            if (square.getTeamColor()!= teamColor){
+                Collection <ChessMove> moves=validMoves(square.getPosition());
+                if (ChessMove move: moves){
+                    if
+                }
+            }
+        }
     }
 
     /**
