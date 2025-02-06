@@ -11,6 +11,8 @@ import java.util.ArrayList;
  */
 public class ChessGame {
     int counter =0;
+    ChessBoard currentBoard= new ChessBoard();
+
     public ChessGame() {
 
     }
@@ -52,14 +54,15 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        ChessBoard currentBoard=getBoard();
-        Collection<ChessMove> acceptableMoves=new ArrayList<>();
-        Collection<ChessMove> potentialMoves = ChessPiece.pieceMoves(currentBoard,startPosition);
-        for (ChessMove move:potentialMoves){
-            if (isInCheck(startPosition.TeamColor())== false) {
-                acceptableMoves.add(move);
-            }
-        }
+//        ChessBoard currentBoard=getBoard();
+//        Collection<ChessMove> acceptableMoves=new ArrayList<>();
+//        Collection<ChessMove> potentialMoves = ChessPiece.pieceMoves(currentBoard,startPosition);
+//        for (ChessMove move:potentialMoves){
+//            if (isInCheck(startPosition.TeamColor())== false) {
+//                acceptableMoves.add(move);
+//            }
+//        }
+        throw new RuntimeException("Not implemented");
     }
 
     /**
@@ -79,15 +82,25 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        ChessBoard squares=getBoard();
-        for (ChessPiece square:squares){
-            if (square.getTeamColor()!= teamColor){
-                Collection <ChessMove> moves=validMoves(square.getPosition());
-                if (ChessMove move: moves){
-                    if
+        boolean inCheck=false;
+        for (int i=0; i<8; i++){
+            for(int j=0; j<8; j++){
+                ChessPosition position=new ChessPosition(i,j);
+                ChessPiece piece=currentBoard.getPiece(position);
+                if (piece.getTeamColor()!=teamColor){
+                    Collection<ChessMove> potentialMoves=piece.pieceMoves(currentBoard,position);
+                    for (ChessMove move: potentialMoves){
+                        ChessPosition newPosition=move.getEndPosition();
+                        ChessPiece potentialPiece=currentBoard.getPiece(newPosition);
+                        if (potentialPiece.getPieceType()==ChessPiece.PieceType.KING){
+                            inCheck=true;
+                            return inCheck;
+                        }
+                    }
                 }
             }
         }
+        return inCheck;
     }
 
     /**
@@ -126,6 +139,6 @@ public class ChessGame {
      * @return the chessboard
      */
     public ChessBoard getBoard() {
-        return ChessBoard.getBoard();
+        return currentBoard;
     }
 }
