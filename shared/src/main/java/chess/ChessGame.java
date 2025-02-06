@@ -54,15 +54,19 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-//        ChessBoard currentBoard=getBoard();
-//        Collection<ChessMove> acceptableMoves=new ArrayList<>();
-//        Collection<ChessMove> potentialMoves = ChessPiece.pieceMoves(currentBoard,startPosition);
-//        for (ChessMove move:potentialMoves){
-//            if (isInCheck(startPosition.TeamColor())== false) {
-//                acceptableMoves.add(move);
-//            }
-//        }
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece=currentBoard.getPiece(startPosition);
+        if (piece==null){
+            return null;
+        } else {
+            Collection<ChessMove> potentialMoves = piece.pieceMoves(currentBoard,startPosition);
+            Collection<ChessMove> acceptableMoves=new ArrayList<>();
+            for (ChessMove move:potentialMoves){
+                if (isInCheck(piece.getTeamColor())== false) {
+                    acceptableMoves.add(move);
+                }
+            }
+            return acceptableMoves;
+        }
     }
 
     /**
@@ -83,16 +87,16 @@ public class ChessGame {
      */
     public boolean isInCheck(TeamColor teamColor) {
         boolean inCheck=false;
-        for (int i=0; i<8; i++){
-            for(int j=0; j<8; j++){
+        for (int i=1; i<9; i++){
+            for(int j=1; j<9; j++){
                 ChessPosition position=new ChessPosition(i,j);
                 ChessPiece piece=currentBoard.getPiece(position);
-                if (piece.getTeamColor()!=teamColor){
+                if (piece!=null && piece.getTeamColor()!=teamColor){
                     Collection<ChessMove> potentialMoves=piece.pieceMoves(currentBoard,position);
                     for (ChessMove move: potentialMoves){
                         ChessPosition newPosition=move.getEndPosition();
                         ChessPiece potentialPiece=currentBoard.getPiece(newPosition);
-                        if (potentialPiece.getPieceType()==ChessPiece.PieceType.KING){
+                        if (potentialPiece!=null && potentialPiece.getPieceType()==ChessPiece.PieceType.KING){
                             inCheck=true;
                             return inCheck;
                         }
@@ -130,7 +134,7 @@ public class ChessGame {
      * @param board the new board to use
      */
     public void setBoard(ChessBoard board) {
-        throw new RuntimeException("Not implemented");
+        currentBoard=board;
     }
 
     /**
