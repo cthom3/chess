@@ -56,25 +56,21 @@ public class ChessGame {
         if (piece==null){
             return acceptableMoves;
         } else {
-            if (piece.getTeamColor()==getTeamTurn()) {
-                ChessBoard copyBoard=currentBoard.DeepCopy();
-                Collection<ChessMove> potentialMoves = piece.pieceMoves(currentBoard, startPosition);
-                for (ChessMove move : potentialMoves) {
-                    ChessPosition newPosition=move.getEndPosition();
-                    ChessPiece placeholder=copyBoard.getPiece(newPosition);
-                    ChessPosition oldPosition=move.getStartPosition();
-                    copyBoard.addPiece(newPosition,piece);
-                    copyBoard.addPiece(oldPosition, null);
-                    if (Check(piece.getTeamColor(),copyBoard)==false){
-                        acceptableMoves.add(move);
-                    }
-                    copyBoard.addPiece(newPosition,placeholder);
-                    copyBoard.addPiece(oldPosition, piece);
+            ChessBoard copyBoard=currentBoard.DeepCopy();
+            Collection<ChessMove> potentialMoves = piece.pieceMoves(currentBoard, startPosition);
+            for (ChessMove move : potentialMoves) {
+                ChessPosition newPosition=move.getEndPosition();
+                ChessPiece placeholder=copyBoard.getPiece(newPosition);
+                ChessPosition oldPosition=move.getStartPosition();
+                copyBoard.addPiece(newPosition,piece);
+                copyBoard.addPiece(oldPosition, null);
+                if (Check(piece.getTeamColor(),copyBoard)==false){
+                    acceptableMoves.add(move);
                 }
-                return acceptableMoves;
-            } else {
-                return acceptableMoves;
+                copyBoard.addPiece(newPosition,placeholder);
+                copyBoard.addPiece(oldPosition, piece);
             }
+            return acceptableMoves;
         }
     }
 
