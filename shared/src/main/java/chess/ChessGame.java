@@ -61,13 +61,14 @@ public class ChessGame {
                 Collection<ChessMove> potentialMoves = piece.pieceMoves(currentBoard, startPosition);
                 for (ChessMove move : potentialMoves) {
                     ChessPosition newPosition=move.getEndPosition();
+                    ChessPiece placeholder=copyBoard.getPiece(newPosition);
                     ChessPosition oldPosition=move.getStartPosition();
                     copyBoard.addPiece(newPosition,piece);
                     copyBoard.addPiece(oldPosition, null);
                     if (Check(piece.getTeamColor(),copyBoard)==false){
                         acceptableMoves.add(move);
                     }
-                    copyBoard.addPiece(newPosition,null);
+                    copyBoard.addPiece(newPosition,placeholder);
                     copyBoard.addPiece(oldPosition, piece);
                 }
                 return acceptableMoves;
