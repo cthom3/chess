@@ -2,6 +2,7 @@ package chess;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.ArrayList;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -78,5 +79,17 @@ public class ChessBoard {
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(squares);
+    }
+
+    public ChessBoard DeepCopy (){
+        ChessBoard board= new ChessBoard();
+        for (int i=1;i<9; i++){
+            for (int j=1; j<9; j++){
+                ChessPosition currentPosition=new ChessPosition (i,j);
+                ChessPiece piece=squares[currentPosition.getRow()][currentPosition.getColumn()];
+                board.addPiece(currentPosition, piece);
+            }
+        }
+        return board;
     }
 }
