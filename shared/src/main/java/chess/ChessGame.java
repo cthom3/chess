@@ -145,7 +145,7 @@ public class ChessGame {
                 for (int j = 1; j < 9; j++) {
                     ChessPosition position = new ChessPosition(i, j);
                     ChessPiece piece = currentBoard.getPiece(position);
-                    if (piece.getTeamColor() == teamColor) {
+                    if (piece!=null && piece.getTeamColor() == teamColor) {
                         Collection<ChessMove> moves = validMoves(position);
                         for (ChessMove move : moves) {
                             acceptableMoves.add(move);
@@ -175,7 +175,7 @@ public class ChessGame {
                 for (int j = 1; j < 9; j++) {
                     ChessPosition position = new ChessPosition(i, j);
                     ChessPiece piece = currentBoard.getPiece(position);
-                    if (piece.getTeamColor() == teamColor) {
+                    if (piece!=null && piece.getTeamColor() == teamColor) {
                         Collection<ChessMove> moves = validMoves(position);
                         for (ChessMove move : moves) {
                             acceptableMoves.add(move);
