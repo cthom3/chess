@@ -11,8 +11,9 @@ import java.util.Arrays;
  * signature of the existing methods.
  */
 public class ChessGame {
-    int counter =0;
+    TeamColor currentTeam=TeamColor.WHITE;
     ChessBoard currentBoard= new ChessBoard();
+
 
     public ChessGame() {
 
@@ -22,12 +23,7 @@ public class ChessGame {
      * @return Which team's turn it is
      */
     public TeamColor getTeamTurn() {
-        if (counter%2==0){
-            return TeamColor.BLACK;
-        } else {
-            return TeamColor.WHITE;
-        }
-
+        return currentTeam;
     }
 
     /**
@@ -36,7 +32,7 @@ public class ChessGame {
      * @param team the team whose turn it is
      */
     public void setTeamTurn(TeamColor team) {
-        counter++;
+        currentTeam=team;
     }
 
     /**
