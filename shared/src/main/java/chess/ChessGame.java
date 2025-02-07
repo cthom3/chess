@@ -60,15 +60,15 @@ public class ChessGame {
                 ChessBoard copyBoard=currentBoard.DeepCopy();
                 Collection<ChessMove> potentialMoves = piece.pieceMoves(currentBoard, startPosition);
                 for (ChessMove move : potentialMoves) {
-                    if (isInCheck(piece.getTeamColor()) == false) {
-                        ChessPosition newPosition=move.getEndPosition();
-                        ChessPosition oldPosition=move.getStartPosition();
-                        copyBoard.addPiece(newPosition,piece);
-                        copyBoard.addPiece(oldPosition, null);
-                        if (Check(piece.getTeamColor(),copyBoard)==false){
-                            acceptableMoves.add(move);
-                        }
+                    ChessPosition newPosition=move.getEndPosition();
+                    ChessPosition oldPosition=move.getStartPosition();
+                    copyBoard.addPiece(newPosition,piece);
+                    copyBoard.addPiece(oldPosition, null);
+                    if (Check(piece.getTeamColor(),copyBoard)==false){
+                        acceptableMoves.add(move);
                     }
+                    copyBoard.addPiece(newPosition,null);
+                    copyBoard.addPiece(oldPosition, piece);
                 }
                 return acceptableMoves;
             } else {
