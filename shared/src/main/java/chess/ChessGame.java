@@ -56,13 +56,13 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece=currentBoard.getPiece(startPosition);
+        Collection<ChessMove> acceptableMoves = new ArrayList<>();
         if (piece==null){
-            return null;
+            return acceptableMoves;
         } else {
             if (piece.getTeamColor()==getTeamTurn()) {
                 ChessBoard copyBoard=currentBoard.DeepCopy();
                 Collection<ChessMove> potentialMoves = piece.pieceMoves(currentBoard, startPosition);
-                Collection<ChessMove> acceptableMoves = new ArrayList<>();
                 for (ChessMove move : potentialMoves) {
                     if (isInCheck(piece.getTeamColor()) == false) {
                         ChessPosition newPosition=move.getEndPosition();
@@ -76,7 +76,7 @@ public class ChessGame {
                 }
                 return acceptableMoves;
             } else {
-                return null;
+                return acceptableMoves;
             }
         }
     }
