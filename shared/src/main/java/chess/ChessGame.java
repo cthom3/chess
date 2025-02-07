@@ -95,8 +95,15 @@ public class ChessGame {
                 }
                 if (valid == true) {
                     ChessPosition newPosition = move.getEndPosition();
-                    currentBoard.addPiece(newPosition, currentPiece);
-                    currentBoard.addPiece(startPosition, null);
+                    ChessPiece.PieceType promotion=move.getPromotionPiece();
+                    if (promotion==null) {
+                        currentBoard.addPiece(newPosition, currentPiece);
+                        currentBoard.addPiece(startPosition, null);
+                    } else {
+                        ChessPiece promoted=new ChessPiece(color,promotion);
+                        currentBoard.addPiece(newPosition, promoted);
+                        currentBoard.addPiece(startPosition, null);
+                    }
                     if (color == TeamColor.WHITE) {
                         setTeamTurn(TeamColor.BLACK);
                     } else {
