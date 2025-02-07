@@ -16,7 +16,7 @@ public class ChessGame {
 
 
     public ChessGame() {
-
+        currentBoard.resetBoard();
     }
 
     /**
