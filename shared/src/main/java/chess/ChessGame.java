@@ -83,30 +83,34 @@ public class ChessGame {
     public void makeMove(ChessMove move) throws InvalidMoveException {
         ChessPosition startPosition=move.getStartPosition();
         ChessPiece currentPiece=currentBoard.getPiece(startPosition);
-        TeamColor color=currentPiece.getTeamColor();
-        if (color==getTeamTurn()){
-            boolean valid = false;
-            Collection<ChessMove> allMoves=validMoves(startPosition);
-            for (ChessMove moves:allMoves){
-                if (moves.equals(move)){
-                    valid=true;
+        if (currentPiece!=null) {
+            TeamColor color = currentPiece.getTeamColor();
+            if (color == getTeamTurn()) {
+                boolean valid = false;
+                Collection<ChessMove> allMoves = validMoves(startPosition);
+                for (ChessMove moves : allMoves) {
+                    if (moves.equals(move)) {
+                        valid = true;
+                    }
                 }
-            } if (valid==true){
-                ChessPosition newPosition=move.getEndPosition();
-                currentBoard.addPiece(newPosition,currentPiece);
-                currentBoard.addPiece(startPosition, null);
-                if (color==TeamColor.WHITE){
-                    setTeamTurn(TeamColor.BLACK);
+                if (valid == true) {
+                    ChessPosition newPosition = move.getEndPosition();
+                    currentBoard.addPiece(newPosition, currentPiece);
+                    currentBoard.addPiece(startPosition, null);
+                    if (color == TeamColor.WHITE) {
+                        setTeamTurn(TeamColor.BLACK);
+                    } else {
+                        setTeamTurn(TeamColor.WHITE);
+                    }
                 } else {
-                    setTeamTurn(TeamColor.WHITE);
+                    throw new InvalidMoveException("Invalid Move");
                 }
-            } else{
-                throw new InvalidMoveException ("Invalid Move");
+            } else {
+                throw new InvalidMoveException("Not team turn");
             }
         } else {
-            throw new InvalidMoveException ("Not team turn");
+            throw new InvalidMoveException("No piece");
         }
-
 
     }
 
