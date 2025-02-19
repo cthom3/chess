@@ -81,7 +81,7 @@ public class ChessBoard {
         return Arrays.deepHashCode(squares);
     }
 
-    public ChessBoard DeepCopy (){
+    public ChessBoard deepCopy (){
         ChessBoard board= new ChessBoard();
         for (int i=1;i<9; i++){
             for (int j=1; j<9; j++){
