@@ -223,4 +223,8 @@ public class ChessGame {
         return noMoves;
     }
 
+//    public ChessMove checkMoves (ChessMove move){
+//
+//    }
+
 }
