@@ -57,7 +57,13 @@ public class UserService {
         }
     }
     public LogoutResult logout (LogoutRequest logoutRequest){
-
+        String authToken=logoutRequest.authToken();
+        try {
+            authAccess.deleteAuth(authToken);
+            return new LogoutResult(null);
+        } catch (DataAccessException ex){
+            return new LogoutResult(ex.getMessage());
+        }
     }
     public static String generateToken() {
         return UUID.randomUUID().toString();
