@@ -1,7 +1,6 @@
 package dataaccess;
 import model.GameData;
 import chess.ChessGame;
-import model.UserData;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,6 +31,10 @@ public class MemoryGameDAO implements GameDAO {
                 originalGame.game());
         games.put(gameID,updatedGame);
         return updatedGame;
+    }
+
+    public void clear (){
+        games.clear();
     }
 
 }
