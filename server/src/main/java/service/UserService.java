@@ -36,10 +36,27 @@ public class UserService {
         }
     }
     public LoginResult login (LoginRequest loginRequest){
-        LoginResult loginResult=new LoginResult(username, authToken);
-        return loginResult;
+        String username=loginRequest.username();
+        String password=loginRequest.password();
+        try {
+            UserData userData=userAccess.getUser(username);
+            String userPassword=userData.password();
+            if (password.equals(userPassword)){
+                try {
+                    String authToken = generateToken();
+                    authAccess.createAuth(authToken, username);
+                    return new LoginResult(username, authToken, null);
+                } catch (DataAccessException ex){
+                    return new LoginResult (null,null,ex.getMessage());
+                }
+            } else {
+                return new LoginResult (null,null,"Error: unauthorized");
+            }
+        } catch (DataAccessException ex){
+            return new LoginResult(null,null,ex.getMessage());
+        }
     }
-    public void logout (LogoutRequest logoutRequest){
+    public LogoutResult logout (LogoutRequest logoutRequest){
 
     }
     public static String generateToken() {
