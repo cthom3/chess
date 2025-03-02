@@ -17,19 +17,23 @@ public class UserService {
         String password=registerRequest.password();
         String email=registerRequest.email();
         try {
-            userAccess.getUser(username);
-            // check to make sure this is returning null
-            try {
-                userAccess.createUser(username, password, email);
+            UserData givenUser=userAccess.getUser(username);
+            if (givenUser.username()==null) {
+                // check to make sure this is returning null
                 try {
-                    String authToken = generateToken();
-                    authAccess.createAuth(authToken,username);
-                    return new RegisterResult(username, authToken, null);
+                    userAccess.createUser(username, password, email);
+                    try {
+                        String authToken = generateToken();
+                        authAccess.createAuth(authToken, username);
+                        return new RegisterResult(username, authToken, null);
+                    } catch (DataAccessException ex) {
+                        return new RegisterResult(null, null, ex.getMessage());
+                    }
                 } catch (DataAccessException ex) {
-                    return new RegisterResult(null,null,ex.getMessage());
+                    return new RegisterResult(null, null, ex.getMessage());
                 }
-            } catch (DataAccessException ex) {
-                return new RegisterResult(null,null,ex.getMessage());
+            } else {
+                return new RegisterResult(null,null,"Error: already taken");
             }
         } catch (DataAccessException ex){
             return new RegisterResult(null,null,ex.getMessage());
