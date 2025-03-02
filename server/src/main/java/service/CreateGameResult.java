@@ -1,5 +1,5 @@
 package service;
 
-public record CreateGameResult(int gameID,
+public record CreateGameResult(Integer gameID,
                                String message) {
 }

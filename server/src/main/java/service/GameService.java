@@ -60,6 +60,8 @@ public class GameService {
                     } catch (DataAccessException ex){
                         return new JoinGameResult (ex.getMessage());
                     }
+                } else {
+                    return new JoinGameResult ("Error: already taken");
                 }
             } catch (DataAccessException ex){
                 return new JoinGameResult (ex.getMessage());
@@ -73,17 +75,14 @@ public class GameService {
         if (playerColor.equals("WHITE")){
             if (gameData.whiteUsername()==null){
                 return true;
-            } else{
-                return false;
             }
         }
         if (playerColor.equals("BLACK")){
             if (gameData.blackUsername()==null){
                 return true;
-            } else{
-                return false;
             }
         }
+        return false;
     }
 
     public GameData updateColor(GameData gameData, String playerColor, String username){
@@ -98,5 +97,6 @@ public class GameService {
         if (playerColor.equals("BLACK")){
             return new GameData(gameID, whiteUsername, username, gameName, board);
         }
+        return gameData;
     }
 }
