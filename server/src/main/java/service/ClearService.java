@@ -18,9 +18,9 @@ public class ClearService {
             gameAccess.clear();
             authAccess.clear();
             userAccess.clear();
-            return new ClearResult (null);
+            return new ClearResult (200,null);
         } catch (DataAccessException ex){
-            return new ClearResult (ex.getMessage());
+            return new ClearResult (500,ex.getMessage());
         }
 
     }

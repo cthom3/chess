@@ -25,18 +25,18 @@ public class UserService {
                     try {
                         String authToken = generateToken();
                         authAccess.createAuth(authToken, username);
-                        return new RegisterResult(username, authToken, null);
+                        return new RegisterResult(200,username, authToken, null);
                     } catch (DataAccessException ex) {
-                        return new RegisterResult(null, null, ex.getMessage());
+                        return new RegisterResult(500,null, null, ex.getMessage());
                     }
                 } catch (DataAccessException ex) {
-                    return new RegisterResult(null, null, ex.getMessage());
+                    return new RegisterResult(500,null, null, ex.getMessage());
                 }
             } else {
-                return new RegisterResult(null,null,"Error: already taken");
+                return new RegisterResult(403,null,null,"Error: already taken");
             }
         } catch (DataAccessException ex){
-            return new RegisterResult(null,null,ex.getMessage());
+            return new RegisterResult(400,null,null,"Error: bad request");
         }
     }
     public LoginResult login (LoginRequest loginRequest){
@@ -49,15 +49,15 @@ public class UserService {
                 try {
                     String authToken = generateToken();
                     authAccess.createAuth(authToken, username);
-                    return new LoginResult(username, authToken, null);
+                    return new LoginResult(200,username, authToken, null);
                 } catch (DataAccessException ex){
-                    return new LoginResult (null,null,ex.getMessage());
+                    return new LoginResult (500,null,null,ex.getMessage());
                 }
             } else {
-                return new LoginResult (null,null,"Error: unauthorized");
+                return new LoginResult (401,null,null,"Error: unauthorized");
             }
         } catch (DataAccessException ex){
-            return new LoginResult(null,null,ex.getMessage());
+            return new LoginResult(500,null,null,ex.getMessage());
         }
     }
     public LogoutResult logout (LogoutRequest logoutRequest){
@@ -65,12 +65,12 @@ public class UserService {
         if (authToken != null){
             try {
                 authAccess.deleteAuth(authToken);
-                return new LogoutResult(null);
+                return new LogoutResult(200,null);
             } catch (DataAccessException ex){
-                return new LogoutResult(ex.getMessage());
+                return new LogoutResult(500,ex.getMessage());
             }
         } else {
-            return new LogoutResult("Error: unauthorized");
+            return new LogoutResult(401,"Error: unauthorized");
         }
 
     }

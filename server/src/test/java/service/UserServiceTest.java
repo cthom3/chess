@@ -27,14 +27,14 @@ public class UserServiceTest {
         service.register(new RegisterRequest("username", "password", "username@email.com"));
         // try to register with an already existing username
         RegisterResult actual=service.register(new RegisterRequest("username", "password", "username@email.com"));
-        RegisterResult expected=new RegisterResult(null,null,"Error: already taken");
+        RegisterResult expected=new RegisterResult(403,null,null,"Error: already taken");
         assertEquals(expected,actual);
     }
     @Test
     public void loginPositiveTest() throws DataAccessException{
         service.register(new RegisterRequest("username", "password", "username@email.com"));
         LoginResult actual=service.login(new LoginRequest("username","password"));
-        LoginResult expected=new LoginResult("username", actual.authToken(), null);
+        LoginResult expected=new LoginResult(200,"username", actual.authToken(), null);
         assertEquals(expected,actual);
         assertNotNull(actual.authToken());
     }
@@ -42,7 +42,7 @@ public class UserServiceTest {
     public void loginNegativeTest() throws DataAccessException{
         service.register(new RegisterRequest("username", "password", "username@email.com"));
         LoginResult actual=service.login(new LoginRequest("username","password1"));
-        LoginResult expected=new LoginResult(null,null, "Error: unauthorized");
+        LoginResult expected=new LoginResult(401,null,null, "Error: unauthorized");
         assertEquals(expected,actual);
     }
     @Test
@@ -50,7 +50,7 @@ public class UserServiceTest {
         service.register(new RegisterRequest("username", "password", "username@email.com"));
         LoginResult loggedIn=service.login(new LoginRequest("username","password"));
         LogoutResult actual=service.logout(new LogoutRequest(loggedIn.authToken()));
-        LogoutResult expected=new LogoutResult(null);
+        LogoutResult expected=new LogoutResult(200,null);
         assertEquals(expected,actual);
         assertNull(authAccess.getAuth(loggedIn.authToken()));
     }
@@ -59,7 +59,7 @@ public class UserServiceTest {
         service.register(new RegisterRequest("username", "password", "username@email.com"));
         LoginResult loggedIn=service.login(new LoginRequest("username","password"));
         LogoutResult actual=service.logout(new LogoutRequest(null));
-        LogoutResult expected=new LogoutResult("Error: unauthorized");
+        LogoutResult expected=new LogoutResult(401,"Error: unauthorized");
         assertEquals(expected,actual);
         assertNotNull(authAccess.getAuth(loggedIn.authToken()));
     }
