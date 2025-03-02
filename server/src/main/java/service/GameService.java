@@ -56,6 +56,9 @@ public class GameService {
                     GameData updatedColorGame=updateColor(gameData,playerColor,authData.username());
                     try {
                         gameAccess.updateGame(updatedColorGame);
+                        return new JoinGameResult(null);
+                    } catch (DataAccessException ex){
+                        return new JoinGameResult (ex.getMessage());
                     }
                 }
             } catch (DataAccessException ex){

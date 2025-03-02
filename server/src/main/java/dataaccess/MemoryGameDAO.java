@@ -24,14 +24,10 @@ public class MemoryGameDAO implements GameDAO {
         return games.values();
     }
 
-    public GameData updateGame (int gameID){
-        GameData originalGame=games.get(gameID);
-        GameData updatedGame=new GameData(
-                originalGame.gameID(),originalGame.whiteUsername(),
-                originalGame.blackUsername(), originalGame.gameName(),
-                originalGame.game());
-        games.put(gameID,updatedGame);
-        return updatedGame;
+    public void updateGame (GameData gameData){
+        int gameID=gameData.gameID();
+        games.remove(gameID);
+        games.put(gameID,gameData);
     }
 
     public void clear (){
