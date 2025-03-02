@@ -45,14 +45,27 @@ public class UserServiceTest {
     }
     @Test
     public void loginNegativeTest() throws DataAccessException{
-
+        service.register(new RegisterRequest("username", "password", "username@email.com"));
+        LoginResult actual=service.login(new LoginRequest("username","password1"));
+        LoginResult expected=new LoginResult(null,null, "Error: unauthorized");
+        assertEquals(expected,actual);
     }
     @Test
     public void logoutPositiveTest() throws DataAccessException{
-
+        service.register(new RegisterRequest("username", "password", "username@email.com"));
+        LoginResult loggedIn=service.login(new LoginRequest("username","password"));
+        LogoutResult actual=service.logout(new LogoutRequest(loggedIn.authToken()));
+        LogoutResult expected=new LogoutResult(null);
+        assertEquals(expected,actual);
+        assertNull(authAccess.getAuth(loggedIn.authToken()));
     }
     @Test
     public void logoutNegativeTest() throws DataAccessException{
-
+        service.register(new RegisterRequest("username", "password", "username@email.com"));
+        LoginResult loggedIn=service.login(new LoginRequest("username","password"));
+        LogoutResult actual=service.logout(new LogoutRequest(null));
+        LogoutResult expected=new LogoutResult("Error: unauthorized");
+        assertEquals(expected,actual);
+        assertNotNull(authAccess.getAuth(loggedIn.authToken()));
     }
 }
