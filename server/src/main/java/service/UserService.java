@@ -18,7 +18,7 @@ public class UserService {
         String email=registerRequest.email();
         try {
             UserData givenUser=userAccess.getUser(username);
-            if (givenUser.username()==null) {
+            if (givenUser==null) {
                 // check to make sure this is returning null
                 try {
                     userAccess.createUser(username, password, email);
@@ -62,12 +62,17 @@ public class UserService {
     }
     public LogoutResult logout (LogoutRequest logoutRequest){
         String authToken=logoutRequest.authToken();
-        try {
-            authAccess.deleteAuth(authToken);
-            return new LogoutResult(null);
-        } catch (DataAccessException ex){
-            return new LogoutResult(ex.getMessage());
+        if (authToken != null){
+            try {
+                authAccess.deleteAuth(authToken);
+                return new LogoutResult(null);
+            } catch (DataAccessException ex){
+                return new LogoutResult(ex.getMessage());
+            }
+        } else {
+            return new LogoutResult("Error: unauthorized");
         }
+
     }
     private static String generateToken() {
         return UUID.randomUUID().toString();

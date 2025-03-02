@@ -3,12 +3,7 @@ import dataaccess.*;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
-
-import service.UserService;
 import model.UserData;
-import model.AuthData;
-import dataaccess.UserDAO;
-import dataaccess.AuthDAO;
 
 public class UserServiceTest {
     private final UserDAO userAccess=new MemoryUserDAO();
