@@ -65,7 +65,7 @@ public class UserService {
             return new LogoutResult(ex.getMessage());
         }
     }
-    public static String generateToken() {
+    private static String generateToken() {
         return UUID.randomUUID().toString();
     }
 

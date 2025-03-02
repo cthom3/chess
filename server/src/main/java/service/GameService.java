@@ -71,7 +71,7 @@ public class GameService {
         }
     }
 
-    public boolean isColorAvailable(String playerColor, GameData gameData){
+    private boolean isColorAvailable(String playerColor, GameData gameData){
         if (playerColor.equals("WHITE")){
             if (gameData.whiteUsername()==null){
                 return true;
@@ -85,7 +85,7 @@ public class GameService {
         return false;
     }
 
-    public GameData updateColor(GameData gameData, String playerColor, String username){
+    private GameData updateColor(GameData gameData, String playerColor, String username){
         int gameID=gameData.gameID();
         String whiteUsername=gameData.whiteUsername();
         String blackUsername=gameData.blackUsername();
