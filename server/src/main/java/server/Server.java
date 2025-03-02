@@ -2,19 +2,19 @@ package server;
 import com.google.gson.Gson;
 
 import dataaccess.DataAccessException;
+import dataaccess.*;
 import service.*;
 import spark.*;
 
 public class Server {
-    private final UserService userService;
-    private final GameService gameService;
-    private final ClearService clearService;
+    private final UserDAO userDAO=new MemoryUserDAO();
+    private final GameDAO gameDAO=new MemoryGameDAO();
+    private final AuthDAO authDAO= new MemoryAuthDAO();
+    private final UserService userService=new UserService(userDAO,authDAO);
+    private final GameService gameService=new GameService(gameDAO,authDAO);
+    private final ClearService clearService= new ClearService(userDAO,authDAO,gameDAO);
 
-    public Server (UserService userService,GameService gameService,ClearService clearService){
-        this.userService=userService;
-        this.gameService=gameService;
-        this.clearService=clearService;
-    }
+    public Server (){}
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
