@@ -1,7 +1,7 @@
 package service;
 
 public record LoginResult(
-        int code,
+        int statusCode,
         String username,
         String authToken,
         String message) {

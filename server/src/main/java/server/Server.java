@@ -43,11 +43,11 @@ public class Server {
     }
 
 //    private void exceptionHandler(DataAccessException ex, Request req, Response res){
-//        res.status(ex.StatusCode());
-//        res.body(ex.toJson());
+//        res.status(ex.code());
+//        res.body(ex.message());
 //    }
 
-    private Object register(Request req, Response res) throws DataAccessException {
+    private Object register(Request req, Response res) throws DataAccessException{
         RegisterRequest user= new Gson().fromJson(req.body(),RegisterRequest.class);
         RegisterResult newUser=userService.register(user);
         return new Gson().toJson(newUser);

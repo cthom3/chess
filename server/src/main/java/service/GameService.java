@@ -16,43 +16,51 @@ public class GameService {
         this.authAccess=authAccess;
     }
     public CreateGameResult createGame(CreateGameRequest createGameRequest){
-        String gameName=createGameRequest.gameName();
-        String authToken=createGameRequest.authToken();
-        if (gameName!=null) {
-            try {
-                AuthData authorize = authAccess.getAuth(authToken);
-                if (authorize!=null) {
-                    try {
-                        int gameID = gameAccess.createGame(gameName);
-                        return new CreateGameResult(200, gameID, null);
-                    } catch (DataAccessException ex) {
-                        return new CreateGameResult(500, null, ex.getMessage());
+        if (createGameRequest!=null) {
+            String gameName = createGameRequest.gameName();
+            String authToken = createGameRequest.authToken();
+            if (gameName != null) {
+                try {
+                    AuthData authorize = authAccess.getAuth(authToken);
+                    if (authorize != null) {
+                        try {
+                            int gameID = gameAccess.createGame(gameName);
+                            return new CreateGameResult(200, gameID, null);
+                        } catch (DataAccessException ex) {
+                            return new CreateGameResult(500, null, ex.getMessage());
+                        }
+                    } else {
+                        return new CreateGameResult(401, null, "Error: unauthorized");
                     }
-                } else{
-                    return new CreateGameResult(401, null,"Error: unauthorized");
+                } catch (DataAccessException ex) {
+                    return new CreateGameResult(401, null, "Error: unauthorized");
                 }
-            } catch (DataAccessException ex) {
-                return new CreateGameResult(401,null, "Error: unauthorized");
+            } else {
+                return new CreateGameResult(400, null, "Error: bad request");
             }
-        } else {
-            return new CreateGameResult (400, null, "Error: bad request");
+        } else{
+            return new CreateGameResult(400,null,"Error: bad request");
         }
     }
     public ListGamesResult listGames(ListGamesRequest listGameRequest){
-        String authToken=listGameRequest.authToken();
-        try {
-           AuthData authorize=authAccess.getAuth(authToken);
-           if (authorize!=null) {
-               try {
-                   Collection<GameData> allGames = gameAccess.listGames();
-                   return new ListGamesResult(200, allGames, null);
-               } catch (DataAccessException ex) {
-                   return new ListGamesResult(500, null, ex.getMessage());
-               }
-           } else {
-               return new ListGamesResult(401,null,"Error: unauthorized");
-           }
-        } catch (DataAccessException ex){
+        if (listGameRequest!=null) {
+            String authToken = listGameRequest.authToken();
+            try {
+                AuthData authorize = authAccess.getAuth(authToken);
+                if (authorize != null) {
+                    try {
+                        Collection<GameData> allGames = gameAccess.listGames();
+                        return new ListGamesResult(200, allGames, null);
+                    } catch (DataAccessException ex) {
+                        return new ListGamesResult(500, null, ex.getMessage());
+                    }
+                } else {
+                    return new ListGamesResult(401, null, "Error: unauthorized");
+                }
+            } catch (DataAccessException ex) {
+                return new ListGamesResult(401, null, "Error: unauthorized");
+            }
+        } else {
             return new ListGamesResult(401,null,"Error: unauthorized");
         }
     }

@@ -1,4 +1,4 @@
 package service;
 
-public record JoinGameResult(int code,String message) {
+public record JoinGameResult(int statusCode,String message) {
 }

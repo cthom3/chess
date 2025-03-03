@@ -1,7 +1,7 @@
 package service;
 
 public record RegisterResult(
-        int code,
+        int statusCode,
         String username,
         String authToken,
         String message) {

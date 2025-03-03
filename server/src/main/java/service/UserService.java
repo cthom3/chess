@@ -44,35 +44,42 @@ public class UserService {
         String password=loginRequest.password();
         try {
             UserData userData=userAccess.getUser(username);
-            String userPassword=userData.password();
-            if (password.equals(userPassword)){
-                try {
-                    String authToken = generateToken();
-                    authAccess.createAuth(authToken, username);
-                    return new LoginResult(200,username, authToken, null);
-                } catch (DataAccessException ex){
-                    return new LoginResult (500,null,null,ex.getMessage());
+            if (userData !=null) {
+                String userPassword = userData.password();
+                if (password.equals(userPassword)) {
+                    try {
+                        String authToken = generateToken();
+                        authAccess.createAuth(authToken, username);
+                        return new LoginResult(200, username, authToken, null);
+                    } catch (DataAccessException ex) {
+                        return new LoginResult(500, null, null, ex.getMessage());
+                    }
+                } else {
+                    return new LoginResult(401, null, null, "Error: unauthorized");
                 }
             } else {
-                return new LoginResult (401,null,null,"Error: unauthorized");
+                return new LoginResult(401,null,null, "Error: unauthorized");
             }
         } catch (DataAccessException ex){
             return new LoginResult(500,null,null,ex.getMessage());
         }
     }
     public LogoutResult logout (LogoutRequest logoutRequest){
-        String authToken=logoutRequest.authToken();
-        if (authToken != null){
-            try {
-                authAccess.deleteAuth(authToken);
-                return new LogoutResult(200,null);
-            } catch (DataAccessException ex){
-                return new LogoutResult(500,ex.getMessage());
+        if (logoutRequest!=null) {
+            String authToken = logoutRequest.authToken();
+            if (authToken != null) {
+                try {
+                    authAccess.deleteAuth(authToken);
+                    return new LogoutResult(200, null);
+                } catch (DataAccessException ex) {
+                    return new LogoutResult(500, ex.getMessage());
+                }
+            } else {
+                return new LogoutResult(401, "Error: unauthorized");
             }
         } else {
             return new LogoutResult(401,"Error: unauthorized");
         }
-
     }
     private static String generateToken() {
         return UUID.randomUUID().toString();

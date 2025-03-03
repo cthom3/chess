@@ -1,4 +1,4 @@
 package service;
 
-public record ClearResult(int code,String message) {
+public record ClearResult(int statusCode, String message) {
 }
