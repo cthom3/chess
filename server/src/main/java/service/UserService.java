@@ -3,6 +3,7 @@ import dataaccess.UserDAO;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import model.UserData;
+import model.AuthData;
 import java.util.UUID;
 
 public class UserService {
@@ -16,26 +17,30 @@ public class UserService {
         String username=registerRequest.username();
         String password=registerRequest.password();
         String email=registerRequest.email();
-        try {
-            UserData givenUser=userAccess.getUser(username);
-            if (givenUser==null) {
-                // check to make sure this is returning null
-                try {
-                    userAccess.createUser(username, password, email);
+        if (password!=null) {
+            try {
+                UserData givenUser = userAccess.getUser(username);
+                if (givenUser == null) {
+                    // check to make sure this is returning null
                     try {
-                        String authToken = generateToken();
-                        authAccess.createAuth(authToken, username);
-                        return new RegisterResult(200,username, authToken, null);
+                        userAccess.createUser(username, password, email);
+                        try {
+                            String authToken = generateToken();
+                            authAccess.createAuth(authToken, username);
+                            return new RegisterResult(200, username, authToken, null);
+                        } catch (DataAccessException ex) {
+                            return new RegisterResult(500, null, null, ex.getMessage());
+                        }
                     } catch (DataAccessException ex) {
-                        return new RegisterResult(500,null, null, ex.getMessage());
+                        return new RegisterResult(500, null, null, ex.getMessage());
                     }
-                } catch (DataAccessException ex) {
-                    return new RegisterResult(500,null, null, ex.getMessage());
+                } else {
+                    return new RegisterResult(403, null, null, "Error: already taken");
                 }
-            } else {
-                return new RegisterResult(403,null,null,"Error: already taken");
+            } catch (DataAccessException ex) {
+                return new RegisterResult(400, null, null, "Error: bad request");
             }
-        } catch (DataAccessException ex){
+        }else {
             return new RegisterResult(400,null,null,"Error: bad request");
         }
     }
@@ -61,7 +66,7 @@ public class UserService {
                 return new LoginResult(401,null,null, "Error: unauthorized");
             }
         } catch (DataAccessException ex){
-            return new LoginResult(500,null,null,ex.getMessage());
+            return new LoginResult(400,null,null,"Error: bad request");
         }
     }
     public LogoutResult logout (LogoutRequest logoutRequest){
@@ -69,8 +74,17 @@ public class UserService {
             String authToken = logoutRequest.authToken();
             if (authToken != null) {
                 try {
-                    authAccess.deleteAuth(authToken);
-                    return new LogoutResult(200, null);
+                    AuthData retrievedToken = authAccess.getAuth(authToken);
+                    if (retrievedToken != null) {
+                        try {
+                            authAccess.deleteAuth(authToken);
+                            return new LogoutResult(200, null);
+                        } catch (DataAccessException ex) {
+                            return new LogoutResult(500, ex.getMessage());
+                        }
+                    } else {
+                        return new LogoutResult(401, "Error: unauthorized");
+                    }
                 } catch (DataAccessException ex) {
                     return new LogoutResult(500, ex.getMessage());
                 }
