@@ -61,30 +61,34 @@ public class GameService {
             try {
                 AuthData authData = authAccess.getAuth(authToken);
                 GameData gameData = gameAccess.getGame(gameID);
-                if (authData!=null) {
-                    if (gameData != null && (playerColor.equals("WHITE") || playerColor.equals("BLACK"))) {
-                        if (isColorAvailable(playerColor, gameData)) {
-                            GameData updatedColorGame = updateColor(gameData, playerColor, authData.username());
-                            try {
-                                gameAccess.updateGame(updatedColorGame);
-                                return new JoinGameResult(200, null);
-                            } catch (DataAccessException ex) {
-                                return new JoinGameResult(500, ex.getMessage());
-                            }
-                        } else {
-                            return new JoinGameResult(403, "Error: already taken");
-                        }
-                    } else {
-                        return new JoinGameResult(400, "Error: bad request");
-                    }
-                } else {
-                    return new JoinGameResult(401,"Error: unauthorized");
-                }
+                return checkGame(playerColor,gameData,authData);
             } catch (DataAccessException ex) {
                 return new JoinGameResult(401, "Error: unauthorized");
             }
         } else {
             return new JoinGameResult(400, "Error: bad request");
+        }
+    }
+
+    private JoinGameResult checkGame (String playerColor, GameData gameData, AuthData authData){
+        if (authData!=null) {
+            if (gameData != null && (playerColor.equals("WHITE") || playerColor.equals("BLACK"))) {
+                if (isColorAvailable(playerColor, gameData)) {
+                    GameData updatedColorGame = updateColor(gameData, playerColor, authData.username());
+                    try {
+                        gameAccess.updateGame(updatedColorGame);
+                        return new JoinGameResult(200, null);
+                    } catch (DataAccessException ex) {
+                        return new JoinGameResult(500, ex.getMessage());
+                    }
+                } else {
+                    return new JoinGameResult(403, "Error: already taken");
+                }
+            } else {
+                return new JoinGameResult(400, "Error: bad request");
+            }
+        } else {
+            return new JoinGameResult(401,"Error: unauthorized");
         }
     }
 
