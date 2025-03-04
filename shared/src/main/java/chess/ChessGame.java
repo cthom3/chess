@@ -188,13 +188,9 @@ public class ChessGame {
                 ChessPiece piece=board.getPiece(position);
                 if (piece!=null && piece.getTeamColor()!=teamColor){
                     Collection<ChessMove> potentialMoves=piece.pieceMoves(board,position);
-                    for (ChessMove move: potentialMoves){
-                        ChessPosition newPosition=move.getEndPosition();
-                        ChessPiece potentialPiece=board.getPiece(newPosition);
-                        if (potentialPiece!=null && potentialPiece.getPieceType()==ChessPiece.PieceType.KING){
-                            inCheck=true;
-                            return inCheck;
-                        }
+                    inCheck=checkMoves(potentialMoves,board);
+                    if (inCheck==true){
+                        return inCheck;
                     }
                 }
             }
@@ -223,8 +219,17 @@ public class ChessGame {
         return noMoves;
     }
 
-//    public ChessMove checkMoves (ChessMove move){
-//
-//    }
+    public boolean checkMoves (Collection<ChessMove> potentialMoves, ChessBoard board){
+        boolean inCheck=false;
+        for (ChessMove move: potentialMoves){
+            ChessPosition newPosition=move.getEndPosition();
+            ChessPiece potentialPiece=board.getPiece(newPosition);
+            if (potentialPiece!=null && potentialPiece.getPieceType()==ChessPiece.PieceType.KING){
+                inCheck=true;
+                return inCheck;
+            }
+        }
+        return inCheck;
+    }
 
 }
