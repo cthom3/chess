@@ -1,4 +1,4 @@
-package service;
+package service.gamerecords;
 
 public record CreateGameResult(int statusCode,
                                Integer gameID,

@@ -4,6 +4,8 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import model.UserData;
 import model.AuthData;
+import service.userrecords.*;
+
 import java.util.UUID;
 
 public class UserService {
@@ -24,13 +26,9 @@ public class UserService {
                     // check to make sure this is returning null
                     try {
                         userAccess.createUser(username, password, email);
-                        try {
-                            String authToken = generateToken();
-                            authAccess.createAuth(authToken, username);
-                            return new RegisterResult(200, username, authToken, null);
-                        } catch (DataAccessException ex) {
-                            return new RegisterResult(500, null, null, ex.getMessage());
-                        }
+                        String authToken = generateToken();
+                        authAccess.createAuth(authToken, username);
+                        return new RegisterResult(200, username, authToken, null);
                     } catch (DataAccessException ex) {
                         return new RegisterResult(500, null, null, ex.getMessage());
                     }
@@ -40,7 +38,7 @@ public class UserService {
             } catch (DataAccessException ex) {
                 return new RegisterResult(400, null, null, "Error: bad request");
             }
-        }else {
+        } else {
             return new RegisterResult(400,null,null,"Error: bad request");
         }
     }
@@ -49,18 +47,14 @@ public class UserService {
         String password=loginRequest.password();
         try {
             UserData userData=userAccess.getUser(username);
-            if (userData !=null) {
+            if (userData !=null && password.equals(userData.password())) {
                 String userPassword = userData.password();
-                if (password.equals(userPassword)) {
-                    try {
-                        String authToken = generateToken();
-                        authAccess.createAuth(authToken, username);
-                        return new LoginResult(200, username, authToken, null);
-                    } catch (DataAccessException ex) {
-                        return new LoginResult(500, null, null, ex.getMessage());
-                    }
-                } else {
-                    return new LoginResult(401, null, null, "Error: unauthorized");
+                try {
+                    String authToken = generateToken();
+                    authAccess.createAuth(authToken, username);
+                    return new LoginResult(200, username, authToken, null);
+                } catch (DataAccessException ex) {
+                    return new LoginResult(500, null, null, ex.getMessage());
                 }
             } else {
                 return new LoginResult(401,null,null, "Error: unauthorized");
@@ -70,26 +64,22 @@ public class UserService {
         }
     }
     public LogoutResult logout (LogoutRequest logoutRequest){
-        if (logoutRequest!=null) {
+        if (logoutRequest!=null && logoutRequest.authToken()!=null) {
             String authToken = logoutRequest.authToken();
-            if (authToken != null) {
-                try {
-                    AuthData retrievedToken = authAccess.getAuth(authToken);
-                    if (retrievedToken != null) {
-                        try {
-                            authAccess.deleteAuth(authToken);
-                            return new LogoutResult(200, null);
-                        } catch (DataAccessException ex) {
-                            return new LogoutResult(500, ex.getMessage());
-                        }
-                    } else {
-                        return new LogoutResult(401, "Error: unauthorized");
+            try {
+                AuthData retrievedToken = authAccess.getAuth(authToken);
+                if (retrievedToken != null) {
+                    try {
+                        authAccess.deleteAuth(authToken);
+                        return new LogoutResult(200, null);
+                    } catch (DataAccessException ex) {
+                        return new LogoutResult(500, ex.getMessage());
                     }
-                } catch (DataAccessException ex) {
-                    return new LogoutResult(500, ex.getMessage());
+                } else {
+                    return new LogoutResult(401, "Error: unauthorized");
                 }
-            } else {
-                return new LogoutResult(401, "Error: unauthorized");
+            } catch (DataAccessException ex) {
+                return new LogoutResult(500, ex.getMessage());
             }
         } else {
             return new LogoutResult(401,"Error: unauthorized");

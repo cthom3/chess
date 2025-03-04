@@ -1,4 +1,4 @@
-package service;
+package service.userrecords;
 
 public record LoginRequest(
         String username,

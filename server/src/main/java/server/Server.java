@@ -4,6 +4,10 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.*;
 import service.*;
+import service.clearrecords.ClearRequest;
+import service.clearrecords.ClearResult;
+import service.gamerecords.*;
+import service.userrecords.*;
 import spark.*;
 
 public class Server {
@@ -41,11 +45,6 @@ public class Server {
         Spark.stop();
         Spark.awaitStop();
     }
-
-//    private void exceptionHandler(DataAccessException ex, Request req, Response res){
-//        res.status(ex.StatusCode());
-//        res.body(ex.toJson());
-//    }
 
     private Object register(Request req, Response res) throws DataAccessException{
         RegisterRequest user= new Gson().fromJson(req.body(),RegisterRequest.class);

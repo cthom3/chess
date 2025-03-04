@@ -1,6 +1,6 @@
-package service;
+package service.userrecords;
 
-public record RegisterResult(
+public record LoginResult(
         int statusCode,
         String username,
         String authToken,
