@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -230,66 +231,33 @@ public class ChessPiece {
     public Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition){
         Collection<ChessMove> moves=new ArrayList<>();
         ChessGame.TeamColor color=board.getBoard()[myPosition.getRow()][myPosition.getColumn()].getTeamColor();
-        int i=myPosition.getRow()+1;
-        int j=myPosition.getColumn()+2;
-        int k=0;
+
+        List<Integer> outside=new ArrayList<>();
+        outside.add(myPosition.getColumn()+2);
+        outside.add(myPosition.getColumn()-2);
+
+        moves=checkRowKnightMoves(myPosition.getRow()+1,outside,board,myPosition,color,moves);
+        moves=checkRowKnightMoves(myPosition.getRow()-1,outside,board,myPosition,color,moves);
+
+        List<Integer> inside=new ArrayList<>();
+        inside.add(myPosition.getColumn()+1);
+        inside.add(myPosition.getColumn()-1);
+        moves=checkRowKnightMoves(myPosition.getRow()+2,inside,board,myPosition,color,moves);
+        moves=checkRowKnightMoves(myPosition.getRow()-2,inside,board,myPosition,color,moves);
+        return moves;
+    }
+
+    private Collection<ChessMove> checkRowKnightMoves (int i, List<Integer> j, ChessBoard board, ChessPosition myPosition,
+                                                       ChessGame.TeamColor color, Collection<ChessMove> moves){
         int l=0;
+        int k=0;
         while (i<8 && i>=0 && l<2){
-            while (j>=0 && j<8 && k<1){
-                if (board.getBoard()[i][j]==null || board.getBoard()[i][j].getTeamColor()!=color) {
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i + 1, j + 1), null));
+            while (j.get(l)>=0 && j.get(l)<8 && k<1){
+                if (board.getBoard()[i][j.get(l)]==null || board.getBoard()[i][j.get(l)].getTeamColor()!=color){
+                    moves.add(new ChessMove(myPosition, new ChessPosition(i+1, j.get(l)+1), null));
                 }
                 k++;
             }
-            j=myPosition.getColumn()-2;
-            l++;
-            k=0;
-        }
-        i=myPosition.getRow()+2;
-        j=myPosition.getColumn()+1;
-        k=0;
-        l=0;
-        while (i<8 && i>=0 && l<2){
-            while (j>=0 && j<8 && k<1){
-                if (board.getBoard()[i][j]==null || board.getBoard()[i][j].getTeamColor()!=color){
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i+1, j+1), null));
-                }
-                j=myPosition.getColumn()-1;
-                k++;
-            }
-            j=myPosition.getColumn()-1;
-            l++;
-            k=0;
-        }
-        i=myPosition.getRow()-1;
-        j=myPosition.getColumn()+2;
-        k=0;
-        l=0;
-        while (i<8 && i>=0 && l<2){
-            while (j>=0 && j<8 && k<1){
-                if (board.getBoard()[i][j]==null || board.getBoard()[i][j].getTeamColor()!=color){
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i+1, j+1), null));
-                }
-                j=myPosition.getColumn()-2;
-                k++;
-            }
-            j=myPosition.getColumn()-2;
-            l++;
-            k=0;
-        }
-        i=myPosition.getRow()-2;
-        j=myPosition.getColumn()+1;
-        k=0;
-        l=0;
-        while (i<8 && i>=0 && l<2){
-            while (j>=0 && j<8 && k<1){
-                if (board.getBoard()[i][j]==null || board.getBoard()[i][j].getTeamColor()!=color){
-                    moves.add(new ChessMove(myPosition, new ChessPosition(i+1, j+1), null));
-                }
-                j=myPosition.getColumn()-1;
-                k++;
-            }
-            j=myPosition.getColumn()-1;
             l++;
             k=0;
         }
