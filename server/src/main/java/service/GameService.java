@@ -17,52 +17,40 @@ public class GameService {
         this.authAccess=authAccess;
     }
     public CreateGameResult createGame(CreateGameRequest createGameRequest){
-        if (createGameRequest!=null) {
-            String gameName = createGameRequest.gameName();
-            String authToken = createGameRequest.authToken();
-            if (gameName != null) {
+        String gameName = createGameRequest.gameName();
+        String authToken = createGameRequest.authToken();
+        try {
+            AuthData authorize = authAccess.getAuth(authToken);
+            if (authorize != null) {
                 try {
-                    AuthData authorize = authAccess.getAuth(authToken);
-                    if (authorize != null) {
-                        try {
-                            int gameID = gameAccess.createGame(gameName);
-                            return new CreateGameResult(200, gameID, null);
-                        } catch (DataAccessException ex) {
-                            return new CreateGameResult(500, null, ex.getMessage());
-                        }
-                    } else {
-                        return new CreateGameResult(401, null, "Error: unauthorized");
-                    }
+                    int gameID = gameAccess.createGame(gameName);
+                    return new CreateGameResult(200, gameID, null);
                 } catch (DataAccessException ex) {
-                    return new CreateGameResult(401, null, "Error: unauthorized");
+                    return new CreateGameResult(500, null, ex.getMessage());
                 }
             } else {
-                return new CreateGameResult(400, null, "Error: bad request");
+                return new CreateGameResult(401, null, "Error: unauthorized");
             }
-        } else{
-            return new CreateGameResult(400,null,"Error: bad request");
+        } catch (DataAccessException ex) {
+            return new CreateGameResult(401, null, "Error: unauthorized");
         }
     }
     public ListGamesResult listGames(ListGamesRequest listGameRequest){
-        if (listGameRequest!=null) {
-            String authToken = listGameRequest.authToken();
-            try {
-                AuthData authorize = authAccess.getAuth(authToken);
-                if (authorize != null) {
-                    try {
-                        Collection<GameData> allGames = gameAccess.listGames();
-                        return new ListGamesResult(200, allGames, null);
-                    } catch (DataAccessException ex) {
-                        return new ListGamesResult(500, null, ex.getMessage());
-                    }
-                } else {
-                    return new ListGamesResult(401, null, "Error: unauthorized");
+        String authToken = listGameRequest.authToken();
+        try {
+            AuthData authorize = authAccess.getAuth(authToken);
+            if (authorize != null) {
+                try {
+                    Collection<GameData> allGames = gameAccess.listGames();
+                    return new ListGamesResult(200, allGames, null);
+                } catch (DataAccessException ex) {
+                    return new ListGamesResult(500, null, ex.getMessage());
                 }
-            } catch (DataAccessException ex) {
+            } else {
                 return new ListGamesResult(401, null, "Error: unauthorized");
             }
-        } else {
-            return new ListGamesResult(401,null,"Error: unauthorized");
+        } catch (DataAccessException ex) {
+            return new ListGamesResult(401, null, "Error: unauthorized");
         }
     }
     public JoinGameResult joinGame(JoinGameRequest joinGameRequest){
@@ -72,26 +60,22 @@ public class GameService {
         if (playerColor!=null && authToken!=null) {
             try {
                 AuthData authData = authAccess.getAuth(authToken);
+                GameData gameData = gameAccess.getGame(gameID);
                 if (authData!=null) {
-                    try {
-                        GameData gameData = gameAccess.getGame(gameID);
-                        if (gameData != null && (playerColor.equals("WHITE") || playerColor.equals("BLACK"))) {
-                            if (isColorAvailable(playerColor, gameData)) {
-                                GameData updatedColorGame = updateColor(gameData, playerColor, authData.username());
-                                try {
-                                    gameAccess.updateGame(updatedColorGame);
-                                    return new JoinGameResult(200, null);
-                                } catch (DataAccessException ex) {
-                                    return new JoinGameResult(500, ex.getMessage());
-                                }
-                            } else {
-                                return new JoinGameResult(403, "Error: already taken");
+                    if (gameData != null && (playerColor.equals("WHITE") || playerColor.equals("BLACK"))) {
+                        if (isColorAvailable(playerColor, gameData)) {
+                            GameData updatedColorGame = updateColor(gameData, playerColor, authData.username());
+                            try {
+                                gameAccess.updateGame(updatedColorGame);
+                                return new JoinGameResult(200, null);
+                            } catch (DataAccessException ex) {
+                                return new JoinGameResult(500, ex.getMessage());
                             }
                         } else {
-                            return new JoinGameResult(400, "Error: bad request");
+                            return new JoinGameResult(403, "Error: already taken");
                         }
-                    } catch (DataAccessException ex) {
-                        return new JoinGameResult(500, ex.getMessage());
+                    } else {
+                        return new JoinGameResult(400, "Error: bad request");
                     }
                 } else {
                     return new JoinGameResult(401,"Error: unauthorized");

@@ -1,4 +1,4 @@
-package service.clearrecords;
+package service;
 
 public record ClearRequest() {
 }

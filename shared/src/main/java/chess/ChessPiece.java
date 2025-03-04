@@ -114,25 +114,16 @@ public class ChessPiece {
             }
             if (i==0) {
                 ChessPosition newPosition = new ChessPosition(i+1, j+1);
-                moves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
-                moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
-                moves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
-                moves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
+                moves=promotionPawn(myPosition,newPosition,moves);
                 if ((j-1)>=0 && board.getBoard()[i][j-1]!=null){
                     if (board.getBoard()[i][j-1].getTeamColor()==enemy) {
                         ChessPosition newPosition1 = new ChessPosition(i+1, j);
-                        moves.add(new ChessMove(myPosition, newPosition1, PieceType.ROOK));
-                        moves.add(new ChessMove(myPosition, newPosition1, PieceType.BISHOP));
-                        moves.add(new ChessMove(myPosition, newPosition1, PieceType.QUEEN));
-                        moves.add(new ChessMove(myPosition, newPosition1, PieceType.KNIGHT));
+                        moves=promotionPawn(myPosition,newPosition1,moves);
                     }
                 } if ((j+1)<8 && board.getBoard()[i][j+1]!=null){
                     if (board.getBoard()[i][j+1].getTeamColor()==enemy) {
                         ChessPosition newPosition2 = new ChessPosition(i+1, j+2);
-                        moves.add(new ChessMove(myPosition, newPosition2, PieceType.ROOK));
-                        moves.add(new ChessMove(myPosition, newPosition2, PieceType.BISHOP));
-                        moves.add(new ChessMove(myPosition, newPosition2, PieceType.QUEEN));
-                        moves.add(new ChessMove(myPosition, newPosition2, PieceType.KNIGHT));
+                        moves=promotionPawn(myPosition,newPosition2,moves);
                     }
                 }
             }
@@ -161,25 +152,16 @@ public class ChessPiece {
             }
             if (i == 7) {
                 ChessPosition newPosition = new ChessPosition(i+1, j+1);
-                moves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
-                moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
-                moves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
-                moves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
+                moves=promotionPawn(myPosition,newPosition,moves);
                 if ((j-1)>=0 && board.getBoard()[i][j-1]!=null){
                     if (board.getBoard()[i][j-1].getTeamColor()==enemy){
                         ChessPosition newPosition1 = new ChessPosition(i+1, j);
-                        moves.add(new ChessMove(myPosition, newPosition1, PieceType.ROOK));
-                        moves.add(new ChessMove(myPosition, newPosition1, PieceType.BISHOP));
-                        moves.add(new ChessMove(myPosition, newPosition1, PieceType.QUEEN));
-                        moves.add(new ChessMove(myPosition, newPosition1, PieceType.KNIGHT));
+                        moves=promotionPawn(myPosition,newPosition1,moves);
                     }
                 } if ((j+1)<8 && board.getBoard()[i][j+1]!=null){
                     if (board.getBoard()[i][j+1].getTeamColor()==enemy) {
                         ChessPosition newPosition2 = new ChessPosition(i+1, j + 2);
-                        moves.add(new ChessMove(myPosition, newPosition2, PieceType.ROOK));
-                        moves.add(new ChessMove(myPosition, newPosition2, PieceType.BISHOP));
-                        moves.add(new ChessMove(myPosition, newPosition2, PieceType.QUEEN));
-                        moves.add(new ChessMove(myPosition, newPosition2, PieceType.KNIGHT));
+                        moves=promotionPawn(myPosition,newPosition2,moves);
                     }
                 }
             }
@@ -190,6 +172,14 @@ public class ChessPiece {
                 }
             }
         }
+        return moves;
+    }
+
+    private Collection<ChessMove> promotionPawn(ChessPosition myPosition,ChessPosition newPosition,Collection<ChessMove> moves){
+        moves.add(new ChessMove(myPosition, newPosition, PieceType.ROOK));
+        moves.add(new ChessMove(myPosition, newPosition, PieceType.BISHOP));
+        moves.add(new ChessMove(myPosition, newPosition, PieceType.QUEEN));
+        moves.add(new ChessMove(myPosition, newPosition, PieceType.KNIGHT));
         return moves;
     }
 

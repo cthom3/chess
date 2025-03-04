@@ -3,8 +3,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import dataaccess.*;
-import service.clearrecords.ClearRequest;
-import service.clearrecords.ClearResult;
+import service.ClearService;
 
 import java.util.UUID;
 
