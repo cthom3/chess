@@ -71,21 +71,29 @@ public class GameService {
         if (playerColor!=null && authToken!=null) {
             try {
                 AuthData authData = authAccess.getAuth(authToken);
-                try {
-                    GameData gameData = gameAccess.getGame(gameID);
-                    if (isColorAvailable(playerColor, gameData)) {
-                        GameData updatedColorGame = updateColor(gameData, playerColor, authData.username());
-                        try {
-                            gameAccess.updateGame(updatedColorGame);
-                            return new JoinGameResult(200, null);
-                        } catch (DataAccessException ex) {
-                            return new JoinGameResult(500,ex.getMessage());
+                if (authData!=null) {
+                    try {
+                        GameData gameData = gameAccess.getGame(gameID);
+                        if (gameData != null && (playerColor.equals("WHITE") || playerColor.equals("BLACK"))) {
+                            if (isColorAvailable(playerColor, gameData)) {
+                                GameData updatedColorGame = updateColor(gameData, playerColor, authData.username());
+                                try {
+                                    gameAccess.updateGame(updatedColorGame);
+                                    return new JoinGameResult(200, null);
+                                } catch (DataAccessException ex) {
+                                    return new JoinGameResult(500, ex.getMessage());
+                                }
+                            } else {
+                                return new JoinGameResult(403, "Error: already taken");
+                            }
+                        } else {
+                            return new JoinGameResult(400, "Error: bad request");
                         }
-                    } else {
-                        return new JoinGameResult(403, "Error: already taken");
+                    } catch (DataAccessException ex) {
+                        return new JoinGameResult(500, ex.getMessage());
                     }
-                } catch (DataAccessException ex) {
-                    return new JoinGameResult(500,ex.getMessage());
+                } else {
+                    return new JoinGameResult(401,"Error: unauthorized");
                 }
             } catch (DataAccessException ex) {
                 return new JoinGameResult(401, "Error: unauthorized");
