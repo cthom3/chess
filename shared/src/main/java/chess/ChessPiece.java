@@ -164,60 +164,69 @@ public class ChessPiece {
     public Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> moves=new ArrayList<>();
         ChessGame.TeamColor color=board.getBoard()[myPosition.getRow()][myPosition.getColumn()].getTeamColor();
+        if ((myPosition.getRow()+1)<8 && (myPosition.getColumn()+1)<8){
+            moves=kingMovesDiagonalLeft(myPosition.getRow()+1,myPosition.getColumn()+1,board,myPosition,color,moves);
+        }
+        if ((myPosition.getRow()-1)>=0 && (myPosition.getColumn()-1)>=0){
+            moves=kingMovesDiagonalLeft(myPosition.getRow()-1,myPosition.getColumn()-1,board,myPosition,color,moves);
+        }
+        if ((myPosition.getColumn()-1)>=0 && (myPosition.getRow()+1)<8){
+            moves=kingMovesDiagonalRight(myPosition.getColumn()-1,myPosition.getRow()+1,board,myPosition,color,moves);
+        }
+        if ((myPosition.getColumn()+1)<8 && (myPosition.getRow()-1)>=0){
+            moves=kingMovesDiagonalRight(myPosition.getColumn()+1,myPosition.getRow()-1,board,myPosition,color,moves);
+        }
         int i= myPosition.getRow()+1;
-        int j= myPosition.getColumn()+1;
-        if (i<8 && j<8){
-            if (board.getBoard()[i][j]==null || board.getBoard()[i][j].getTeamColor()!=color) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(i+1, j+1), null));
-            }
-        }
-        i=myPosition.getRow()-1;
-        j=myPosition.getColumn()-1;
-        if (i>=0 && j>=0){
-            if (board.getBoard()[i][j]==null || board.getBoard()[i][j].getTeamColor()!=color){
-                moves.add(new ChessMove (myPosition, new ChessPosition(i+1,j+1), null));
-            }
-        }
-        i=myPosition.getColumn()-1;
-        j=myPosition.getRow()+1;
-        if (i>=0 && j<8){
-            if (board.getBoard()[j][i]==null ||board.getBoard()[j][i].getTeamColor()!=color) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(j+1, i+1), null));
-            }
-        }
-        i=myPosition.getColumn()+1;
-        j=myPosition.getRow()-1;
-        if (i<8 && j>=0){
-            if (board.getBoard()[j][i]==null || board.getBoard()[j][i].getTeamColor()!=color){
-                moves.add(new ChessMove (myPosition, new ChessPosition(j+1,i+1), null));
-            }
-        }
-        i= myPosition.getRow()+1;
         if (i<8){
-            if (board.getBoard()[i][myPosition.getColumn()]==null || board.getBoard()[i][myPosition.getColumn()].getTeamColor()!=color) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(i+1, myPosition.getColumn()+1), null));
-            }
+            moves=kingMovesColumn(i,board,myPosition,color,moves);
         }
         i=myPosition.getRow()-1;
         if (i>=0){
-            if (board.getBoard()[i][myPosition.getColumn()]==null ||board.getBoard()[i][myPosition.getColumn()].getTeamColor()!=color){
-                moves.add(new ChessMove (myPosition, new ChessPosition(i+1,myPosition.getColumn()+1), null));
-            }
+            moves=kingMovesColumn(i,board,myPosition,color,moves);
         }
         i=myPosition.getColumn()+1;
         if (i<8){
-            if (board.getBoard()[myPosition.getRow()][i]==null || board.getBoard()[myPosition.getRow()][i].getTeamColor()!=color) {
-                moves.add(new ChessMove(myPosition, new ChessPosition(myPosition.getRow()+1, i+1), null));
-            }
+            moves=kingMovesRow(i,board,myPosition,color,moves);
         }
         i=myPosition.getColumn()-1;
         if (i>=0){
-            if (board.getBoard()[myPosition.getRow()][i]==null || board.getBoard()[myPosition.getRow()][i].getTeamColor()!=color){
-                moves.add(new ChessMove (myPosition, new ChessPosition(myPosition.getRow()+1,i+1), null));
-            }
+            moves=kingMovesRow(i,board,myPosition,color,moves);
         }
         return moves;
     }
+
+    private Collection<ChessMove> kingMovesDiagonalRight (int i, int j, ChessBoard board, ChessPosition myPosition,
+                                                   ChessGame.TeamColor color, Collection<ChessMove> moves){
+        if (board.getBoard()[j][i]==null || board.getBoard()[j][i].getTeamColor()!=color){
+            moves.add(new ChessMove (myPosition, new ChessPosition(j+1,i+1), null));
+        }
+        return moves;
+    }
+
+    private Collection<ChessMove> kingMovesDiagonalLeft (int i, int j, ChessBoard board, ChessPosition myPosition,
+                                                     ChessGame.TeamColor color, Collection<ChessMove> moves){
+        if (board.getBoard()[i][j]==null || board.getBoard()[i][j].getTeamColor()!=color){
+            moves.add(new ChessMove (myPosition, new ChessPosition(i+1,j+1), null));
+        }
+        return moves;
+    }
+
+    private Collection<ChessMove> kingMovesColumn (int i, ChessBoard board, ChessPosition myPosition,
+                                                     ChessGame.TeamColor color, Collection<ChessMove> moves){
+        if (board.getBoard()[i][myPosition.getColumn()]==null || board.getBoard()[i][myPosition.getColumn()].getTeamColor()!=color) {
+            moves.add(new ChessMove(myPosition, new ChessPosition(i+1, myPosition.getColumn()+1), null));
+        }
+        return moves;
+    }
+
+    private Collection<ChessMove> kingMovesRow (int i, ChessBoard board, ChessPosition myPosition,
+                                                   ChessGame.TeamColor color, Collection<ChessMove> moves){
+        if (board.getBoard()[myPosition.getRow()][i]==null || board.getBoard()[myPosition.getRow()][i].getTeamColor()!=color){
+            moves.add(new ChessMove (myPosition, new ChessPosition(myPosition.getRow()+1,i+1), null));
+        }
+        return moves;
+    }
+
     public Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition){
         Collection<ChessMove> moves=new ArrayList<>();
         for (ChessMove rMove: rookMoves(board,myPosition)){
