@@ -19,8 +19,22 @@ public class SqlUserDAO implements UserDAO {
         }
     }
 
-    public UserData getUser (String username) {
-        try (var=conn)
+    public UserData getUser (String username) throws DataAccessException,SQLException{
+        try (var conn =DatabaseManager.getConnection()){
+            var statement="SELECT id, json FROM user WHERE id=?";
+            try (var ps= conn.prepareStatement(statement)) {
+                ps.setString(1,username);
+                try (var rs=ps.executeQuery()){
+                    if (rs.next()){
+                        return readUser(rs));
+                    }
+                }
+            } catch (SQLException e){
+                throw new DataAccessException(e.getMessage());
+            }
+        } catch (DataAccessException e){
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     public void clear() {
