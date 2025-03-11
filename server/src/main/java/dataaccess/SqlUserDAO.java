@@ -20,7 +20,7 @@ public class SqlUserDAO implements UserDAO {
         }
     }
 
-    public UserData getUser (String username) throws DataAccessException,SQLException{
+    public UserData getUser (String username) throws DataAccessException, SQLException{
         try (var conn =DatabaseManager.getConnection()){
             var statement="SELECT id, json FROM user WHERE id=?";
             try (var ps= conn.prepareStatement(statement)) {
@@ -42,8 +42,9 @@ public class SqlUserDAO implements UserDAO {
         }
     }
 
-    public void clear() {
-
+    public void clear() throws DataAccessException,SQLException{
+        var statement="TRUNCATE user";
+        executeUpdate(statement);
     }
 
 
