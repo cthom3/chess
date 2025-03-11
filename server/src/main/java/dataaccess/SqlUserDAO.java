@@ -1,6 +1,7 @@
 package dataaccess;
 import model.UserData;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
@@ -26,7 +27,11 @@ public class SqlUserDAO implements UserDAO {
                 ps.setString(1,username);
                 try (var rs=ps.executeQuery()){
                     if (rs.next()){
-                        return readUser(rs));
+                        var usernameDB=rs.getString("username");
+                        var password=rs.getString("password");
+                        var email=rs.getString("email");
+                        UserData userInfo=new UserData(usernameDB,password,email);
+                        return userInfo;
                     }
                 }
             } catch (SQLException e){
@@ -40,6 +45,7 @@ public class SqlUserDAO implements UserDAO {
     public void clear() {
 
     }
+
 
     private int executeUpdate(String statement, Object... params) throws DataAccessException,SQLException{
         try (var conn=DatabaseManager.getConnection()){
