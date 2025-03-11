@@ -1,7 +1,5 @@
 package dataaccess;
 import model.UserData;
-
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
@@ -11,16 +9,16 @@ public class SqlUserDAO implements UserDAO {
     public SqlUserDAO() throws DataAccessException,SQLException {
         configureDatabase();
     }
-    public void createUser(String username, String password, String email) throws DataAccessException,SQLException {
+    public void createUser(String username, String password, String email) throws DataAccessException {
         try (var conn=DatabaseManager.getConnection()){
             var statement="INSERT INTO user(username,password,email) VALUES (?,?,?)";
             var id=executeUpdate(statement,username,password,email);
-        } catch (SQLException e){
+        } catch (DataAccessException | SQLException e){
             throw new DataAccessException(e.getMessage());
         }
     }
 
-    public UserData getUser (String username) throws DataAccessException, SQLException{
+    public UserData getUser (String username) throws DataAccessException{
         try (var conn =DatabaseManager.getConnection()){
             var statement="SELECT id, json FROM user WHERE id=?";
             try (var ps= conn.prepareStatement(statement)) {
@@ -34,21 +32,20 @@ public class SqlUserDAO implements UserDAO {
                         return userInfo;
                     }
                 }
-            } catch (SQLException e){
-                throw new DataAccessException(e.getMessage());
             }
-        } catch (DataAccessException e){
+        } catch (DataAccessException | SQLException e){
             throw new DataAccessException(e.getMessage());
         }
+        return null;
     }
 
-    public void clear() throws DataAccessException,SQLException{
+    public void clear() throws DataAccessException{
         var statement="TRUNCATE user";
         executeUpdate(statement);
     }
 
 
-    private int executeUpdate(String statement, Object... params) throws DataAccessException,SQLException{
+    private int executeUpdate(String statement, Object... params) throws DataAccessException{
         try (var conn=DatabaseManager.getConnection()){
             try (var ps=conn.prepareStatement(statement,RETURN_GENERATED_KEYS)){
                 for (var i=0; i<params.length; i++){
@@ -69,10 +66,8 @@ public class SqlUserDAO implements UserDAO {
                     return rs.getInt(1);
                 }
                 return 0;
-            }catch (SQLException e) {
-                throw new DataAccessException(e.getMessage());
             }
-        } catch (DataAccessException e){
+        } catch (DataAccessException | SQLException e){
             throw new DataAccessException(e.getMessage());
         }
     }
