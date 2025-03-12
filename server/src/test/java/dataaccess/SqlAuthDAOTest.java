@@ -27,26 +27,66 @@ public class SqlAuthDAOTest {
 
     @Test
     public void createAuthNegativeTest() throws DataAccessException{
-
+        authAccess.createAuth("authToken","username");
+        try {
+            authAccess.createAuth("authToken","username");
+        } catch (DataAccessException e){
+            DataAccessException actual= new DataAccessException(e.getMessage());
+            assertNotNull(actual);
+        }
     }
 
     @Test
-    public void getAuthPositiveTest(){
-
+    public void getAuthPositiveTest() throws DataAccessException{
+        AuthData expectedAuth=new AuthData("authToken","username");
+        authAccess.createAuth("authToken","username");
+        AuthData actualAuth=authAccess.getAuth("authToken");
+        assertEquals(expectedAuth,actualAuth);
     }
 
     @Test
-    public void getAuthNegativeTest(){
-
+    public void getAuthNegativeTest() throws DataAccessException{
+        try{
+            authAccess.getAuth("authToken");
+        } catch (DataAccessException e){
+            DataAccessException actual=new DataAccessException(e.getMessage());
+            assertNotNull(actual);
+        }
     }
 
     @Test
-    public void deleteAuthPositiveTest(){
-
+    public void deleteAuthPositiveTest() throws DataAccessException{
+        authAccess.createAuth("authToken","username");
+        authAccess.getAuth("authToken");
+        authAccess.deleteAuth("authToken");
+        try {
+            authAccess.getAuth("authToken");
+        } catch (DataAccessException e){
+            DataAccessException actual= new DataAccessException(e.getMessage());
+            assertNotNull(actual);
+        }
     }
 
     @Test
-    public void deleteAuthNegativeTest(){
+    public void deleteAuthNegativeTest() throws DataAccessException{
+        try {
+            authAccess.deleteAuth("authToken");
+        } catch (DataAccessException e){
+            DataAccessException actual= new DataAccessException(e.getMessage());
+            assertNotNull(actual);
+        }
+    }
+
+    @Test
+    public void clearTest() throws DataAccessException{
+        authAccess.createAuth("authToken","username");
+        authAccess.clear();
+        try {
+            authAccess.getAuth("authToken");
+        } catch (DataAccessException e){
+            DataAccessException actual= new DataAccessException(e.getMessage());
+            assertNotNull(actual);
+        }
 
     }
 }

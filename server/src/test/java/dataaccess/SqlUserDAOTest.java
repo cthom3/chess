@@ -55,7 +55,7 @@ public class SqlUserDAOTest {
     }
 
     @Test
-    public void clear() throws DataAccessException{
+    public void clearTest() throws DataAccessException{
         UserData expectedUser=new UserData("username","password","username@email.com");
         userAccess.createUser("username","password","username@email.com");
         UserData actualUser=userAccess.getUser("username");
