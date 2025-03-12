@@ -12,30 +12,59 @@ public class SqlUserDAOTest {
     public SqlUserDAOTest() throws SQLException, DataAccessException {
     }
 
+    @BeforeEach
+    void clearAll() throws DataAccessException{
+        userAccess.clear();
+    }
 
     @Test
-    public void createUserPositiveTest() {
+    public void createUserPositiveTest() throws DataAccessException {
         UserData expectedUser=new UserData("username","password","username@email.com");
-        SqlUserDAO.createUser("username","password","username@email.com");
+        userAccess.createUser("username","password","username@email.com");
+        UserData actualUser=userAccess.getUser("username");
+        assertEquals(expectedUser,actualUser);
     }
 
     @Test
-    public void createUserNegativeTest(){
-
+    public void createUserNegativeTest() throws DataAccessException {
+        userAccess.createUser("username",null,"username@email.com");
+        try {
+            userAccess.createUser("username",null,"username@email.com");
+            DataAccessException actual=null;
+            assertNotNull(actual);
+        } catch (DataAccessException e){
+            DataAccessException actual=new DataAccessException(e.getMessage());
+            assertNotNull(actual);
+        }
     }
 
     @Test
-    public void getUserPositiveTest(){
-
+    public void getUserPositiveTest() throws DataAccessException{
+        UserData expectedUser=new UserData("username","password","username@email.com");
+        userAccess.createUser("username","password","username@email.com");
+        UserData actualUser=userAccess.getUser("username");
+        assertEquals(expectedUser,actualUser);
     }
 
     @Test
-    public void getUserNegativeTest(){
-
+    public void getUserNegativeTest() throws DataAccessException{
+        try {
+            userAccess.getUser("username");
+            DataAccessException actual=null;
+            assertNotNull(actual);
+        } catch (DataAccessException e){
+            DataAccessException actual=new DataAccessException(e.getMessage());
+            assertNotNull(actual);
+        }
     }
 
     @Test
-    public void clear(){
+    public void clear() throws DataAccessException{
+        UserData expectedUser=new UserData("username","password","username@email.com");
+        userAccess.createUser("username","password","username@email.com");
+        UserData actualUser=userAccess.getUser("username");
+        userAccess.clear();
 
+        assertEquals(expectedUser,actualUser);
     }
 }

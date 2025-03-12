@@ -1,27 +1,31 @@
 package dataaccess;
 import model.AuthData;
-
 import java.sql.SQLException;
+import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static java.sql.Types.NULL;
 
 public class SqlAuthDAO implements AuthDAO{
-    public SqlAuthDAO() {
-        //
+    public SqlAuthDAO() throws DataAccessException,SQLException{
+        configureDatabase();
     }
-    public void createAuth(String authToken, String username) throws DataAccessException, SQLException {
-        try(var conn=DatabaseManager.getConnection()){
+    public void createAuth(String authToken, String username) throws DataAccessException {
+        try(var connection=DatabaseManager.getConnection()){
             var insertStatement="INSERT INTO auth (username,authToken) VALUES (?,?)";
-            var id=executeUpdate(insertStatement,authToken,username);
+            try (var ps=connection.prepareStatement(insertStatement)) {
+                ps.setString(1, authToken);
+                ps.setString(2, username);
+                ps.executeUpdate();
+            }
         } catch (DataAccessException | SQLException e){
             throw new DataAccessException(e.getMessage());
         }
     }
 
-    public AuthData getAuth(String authToken) throws DataAccessException,SQLException{
-        try(var conn=DatabaseManager.getConnection()){
+    public AuthData getAuth(String authToken) throws DataAccessException{
+        try(var connection=DatabaseManager.getConnection()){
            var statement="SELECT * FROM auth WHERE id=?";
-           try (var ps=conn.prepareStatement(statement)){
+           try (var ps=connection.prepareStatement(statement)){
                ps.setString(1,authToken);
-               ps.setString(2,authToken);
                try(var rs=ps.executeQuery()){
                    if (rs.next()){
                        var authTokenDB=rs.getString("authToken");
@@ -34,27 +38,37 @@ public class SqlAuthDAO implements AuthDAO{
         } catch (DataAccessException | SQLException e){
             throw new DataAccessException(e.getMessage());
         }
+        return null;
     }
 
-    public void deleteAuth(String authToken) throws DataAccessException,SQLException{
-        try(var conn=DatabaseManager.getConnection()){
+    public void deleteAuth(String authToken) throws DataAccessException{
+        try(var connection=DatabaseManager.getConnection()){
             var statement="DELETE FROM auth WHERE authToken=?";
-            executeUpdate(statement,authToken);
-        } catch (DataAccessException | SQLException e){
+            try (var ps=connection.prepareStatement(statement)) {
+                ps.setString(1, authToken);
+                ps.executeUpdate();
+            }
+        } catch (DataAccessException | SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
 
     }
 
     public void clear() throws DataAccessException {
+        try (var connection=DatabaseManager.getConnection()){
             var statement="TRUNCATE auth";
-            executeUpdate(statement);
+            try (var ps=connection.prepareStatement(statement)) {
+                ps.executeUpdate();
+            }
+        } catch (DataAccessException | SQLException e){
+            throw new DataAccessException(e.getMessage());
         }
-
     }
 
     private final String[] createStatements={
             """
             CREATE TABLE IF NOT EXISTS auth(
-            authToken 
+            authToken VARCHAR(255) NOT NULL,
             username VARCHAR(255) NOT NULL
             )
             """
@@ -64,8 +78,12 @@ public class SqlAuthDAO implements AuthDAO{
         DatabaseManager.createDatabase(); //do I need this line of code? don't I just want to initialize this once
         try (var conn=DatabaseManager.getConnection()){
             for (var statement:createStatements){
-
+                try(var preparedStatement=conn.prepareStatement(statement)){
+                    preparedStatement.executeUpdate();
+                }
             }
+        } catch (DataAccessException e){
+            throw new DataAccessException(e.getMessage());
         }
     }
 }
