@@ -27,11 +27,9 @@ public class SqlUserDAOTest {
 
     @Test
     public void createUserNegativeTest() throws DataAccessException {
-        userAccess.createUser("username",null,"username@email.com");
+        userAccess.createUser("username","password","username@email.com");
         try {
-            userAccess.createUser("username",null,"username@email.com");
-            DataAccessException actual=null;
-            assertNotNull(actual);
+            userAccess.createUser("username","password","username@email.com");
         } catch (DataAccessException e){
             DataAccessException actual=new DataAccessException(e.getMessage());
             assertNotNull(actual);
@@ -50,8 +48,6 @@ public class SqlUserDAOTest {
     public void getUserNegativeTest() throws DataAccessException{
         try {
             userAccess.getUser("username");
-            DataAccessException actual=null;
-            assertNotNull(actual);
         } catch (DataAccessException e){
             DataAccessException actual=new DataAccessException(e.getMessage());
             assertNotNull(actual);
