@@ -6,8 +6,12 @@ import java.util.Collection;
 import chess.ChessGame;
 
 public class SqlGameDAO implements GameDAO{
-    public SqlGameDAO() throws DataAccessException,SQLException{
-        configureDatabase();
+    public SqlGameDAO() {
+        try {
+            configureDatabase();
+        } catch (DataAccessException|SQLException e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     public int createGame(String gameName) throws DataAccessException{

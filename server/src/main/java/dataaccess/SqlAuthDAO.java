@@ -5,8 +5,12 @@ import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
 public class SqlAuthDAO implements AuthDAO{
-    public SqlAuthDAO() throws DataAccessException,SQLException{
-        configureDatabase();
+    public SqlAuthDAO() {
+        try {
+            configureDatabase();
+        } catch (DataAccessException|SQLException e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
     public void createAuth(String authToken, String username) throws DataAccessException {
         try(var connection=DatabaseManager.getConnection()){
