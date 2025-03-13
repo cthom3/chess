@@ -29,11 +29,11 @@ public class SqlGameDAO implements GameDAO{
                 ps.setString(4,gameString);
                 ps.executeUpdate();
                 var resultSet=ps.getGeneratedKeys();
-                var ID=0;
+                var iD=0;
                 if (resultSet.next()){
-                    ID=resultSet.getInt(1);
+                    iD=resultSet.getInt(1);
                 }
-                return ID;
+                return iD;
             }
         }catch (DataAccessException | SQLException e){
             throw new DataAccessException(e.getMessage());
