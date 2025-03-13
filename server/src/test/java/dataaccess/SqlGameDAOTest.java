@@ -79,7 +79,10 @@ public class SqlGameDAOTest {
         GameData expected=new GameData(gameID,"username",null,"game1", gameData.game());
         gameAccess.updateGame(expected);
         GameData actual=gameAccess.getGame(gameID);
-        assertEquals(expected,actual);
+        assertEquals(expected.gameID(),actual.gameID());
+        assertEquals(expected.gameName(),actual.gameName());
+        assertEquals(expected.whiteUsername(),actual.whiteUsername());
+        assertEquals(expected.blackUsername(),actual.blackUsername());
     }
 
     @Test

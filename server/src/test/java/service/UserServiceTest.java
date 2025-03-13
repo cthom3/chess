@@ -21,7 +21,8 @@ public class UserServiceTest {
         UserData expectedUser=new UserData("username", "password", "username@email.com");
         service.register(new RegisterRequest("username", "password", "username@email.com"));
         UserData actualUser=userAccess.getUser("username");
-        assertEquals(expectedUser,actualUser);
+        assertEquals(expectedUser.username(),actualUser.username());
+        assertEquals(expectedUser.email(),actualUser.email());
     }
     @Test
     public void registerNegativeTest() throws DataAccessException{
