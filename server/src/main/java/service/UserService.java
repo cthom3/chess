@@ -4,6 +4,7 @@ import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
 import model.UserData;
 import model.AuthData;
+import org.mindrot.jbcrypt.BCrypt;
 import service.userrecords.*;
 
 import java.util.UUID;
@@ -25,7 +26,8 @@ public class UserService {
                 if (givenUser == null) {
                     // check to make sure this is returning null
                     try {
-                        userAccess.createUser(username, password, email);
+                        String hashedPassword=getHashedPassword(password);
+                        userAccess.createUser(username, hashedPassword, email);
                         String authToken = generateToken();
                         authAccess.createAuth(authToken, username);
                         return new RegisterResult(200, username, authToken, null);
@@ -47,7 +49,7 @@ public class UserService {
         String password=loginRequest.password();
         try {
             UserData userData=userAccess.getUser(username);
-            if (userData !=null && password.equals(userData.password())) {
+            if (userData !=null && verifyUser(password,userData.password())) {
                 String userPassword = userData.password();
                 try {
                     String authToken = generateToken();
@@ -87,6 +89,15 @@ public class UserService {
     }
     private static String generateToken() {
         return UUID.randomUUID().toString();
+    }
+
+    private String getHashedPassword(String password){
+        String hashedPassword= BCrypt.hashpw(password, BCrypt.gensalt());
+        return hashedPassword;
+    }
+
+    private boolean verifyUser(String password, String passwordDB){
+        return BCrypt.checkpw(password,passwordDB);
     }
 
 }
