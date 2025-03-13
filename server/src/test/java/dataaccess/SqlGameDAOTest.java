@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class SqlGameDAOTest {
     private final GameDAO gameAccess=new SqlGameDAO();
@@ -56,21 +58,39 @@ public class SqlGameDAOTest {
 
     @Test
     public void listGamesPositiveTest() throws DataAccessException{
-
+        gameAccess.createGame("game1");
+        gameAccess.createGame("game2");
+        gameAccess.createGame("game3");
+        Collection<GameData> list=gameAccess.listGames();
+        assertEquals(3,list.size());
     }
 
     @Test
     public void listGamesNegativeTest() throws DataAccessException{
-
+        Collection<GameData> actual=gameAccess.listGames();
+        Collection<GameData> expected= new ArrayList<GameData>();
+        assertEquals(expected,actual);
     }
 
     @Test
     public void updateGamePositiveTest() throws DataAccessException{
-
+        int gameID=gameAccess.createGame("game1");
+        GameData gameData=gameAccess.getGame(gameID);
+        GameData expected=new GameData(gameID,"username",null,"game1", gameData.game());
+        gameAccess.updateGame(expected);
+        GameData actual=gameAccess.getGame(gameID);
+        assertEquals(expected,actual);
     }
 
     @Test
     public void updateGameNegativeTest() throws DataAccessException{
+        try {
+            GameData expected=new GameData(321,"username",null,"game1", null);
+            gameAccess.updateGame(expected);
+        } catch (DataAccessException e){
+            DataAccessException actual=new DataAccessException(e.getMessage());
+            assertNotNull(actual);
+        }
 
     }
 
