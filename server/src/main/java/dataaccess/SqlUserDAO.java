@@ -6,8 +6,17 @@ import static java.sql.Types.NULL;
 
 public class SqlUserDAO implements UserDAO {
     public SqlUserDAO() {
+        String[] createStatements={
+                """
+            CREATE TABLE IF NOT EXISTS user(
+            username VARCHAR(255) NOT NULL,
+            password VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL
+            )
+            """
+        };
         try {
-            configureDatabase();
+            DatabaseManager.configureDatabase(createStatements);
         } catch (DataAccessException|SQLException e){
             throw new RuntimeException(e.getMessage());
         }
@@ -58,26 +67,4 @@ public class SqlUserDAO implements UserDAO {
         }
     }
 
-    private final String[] createStatements={
-            """
-            CREATE TABLE IF NOT EXISTS user(
-            username VARCHAR(255) NOT NULL,
-            password VARCHAR(255) NOT NULL,
-            email VARCHAR(255) NOT NULL
-            )
-            """
-    };
-
-    private void configureDatabase() throws DataAccessException,SQLException {
-        DatabaseManager.createDatabase();
-        try (var conn=DatabaseManager.getConnection()){
-            for (var statement:createStatements){
-                try (var preparedStatement= conn.prepareStatement(statement)){
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (DataAccessException e){
-            throw new DataAccessException(e.getMessage());
-        }
-    }
 }

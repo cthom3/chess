@@ -10,8 +10,20 @@ import static java.sql.Types.NULL;
 
 public class SqlGameDAO implements GameDAO{
     public SqlGameDAO() {
+        final String[] createStatements={
+            """
+            CREATE TABLE IF NOT EXISTS game(
+            gameID INT NOT NULL AUTO_INCREMENT,
+            whiteUsername VARCHAR(255),
+            blackUsername VARCHAR(255),
+            gameName VARCHAR(255) NOT NULL,
+            game TEXT NOT NULL,
+            PRIMARY KEY(gameID)
+            )
+            """
+        };
         try {
-            configureDatabase();
+            DatabaseManager.configureDatabase(createStatements);
         } catch (DataAccessException|SQLException e){
             throw new RuntimeException(e.getMessage());
         }
@@ -111,32 +123,6 @@ public class SqlGameDAO implements GameDAO{
                 ps.executeUpdate();
             }
         } catch (DataAccessException | SQLException e){
-            throw new DataAccessException(e.getMessage());
-        }
-    }
-
-    private final String[] createStatements={
-            """
-            CREATE TABLE IF NOT EXISTS game(
-            gameID INT NOT NULL AUTO_INCREMENT,
-            whiteUsername VARCHAR(255),
-            blackUsername VARCHAR(255),
-            gameName VARCHAR(255) NOT NULL,
-            game TEXT NOT NULL,
-            PRIMARY KEY(gameID)
-            )
-            """
-    };
-
-    private void configureDatabase() throws DataAccessException,SQLException{
-        DatabaseManager.createDatabase();
-        try (var connection=DatabaseManager.getConnection()){
-            for (var statement:createStatements){
-                try(var preparedStatement=connection.prepareStatement(statement)){
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (DataAccessException e){
             throw new DataAccessException(e.getMessage());
         }
     }

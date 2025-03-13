@@ -19,10 +19,12 @@ public class SqlUserDAOTest {
 
     @Test
     public void createUserPositiveTest() throws DataAccessException {
-        UserData expectedUser=new UserData("username","password","username@email.com");
-        userAccess.createUser("username","password","username@email.com");
-        UserData actualUser=userAccess.getUser("username");
-        assertEquals(expectedUser,actualUser);
+        UserData expectedUser=new UserData("username1","password","username@email.com");
+        userAccess.createUser("username1","password","username@email.com");
+        UserData actualUser=userAccess.getUser("username1");
+        assertEquals(expectedUser.username(),actualUser.username());
+        assertEquals(expectedUser.password(),actualUser.password());
+        assertEquals(expectedUser.email(),actualUser.email());
     }
 
     @Test

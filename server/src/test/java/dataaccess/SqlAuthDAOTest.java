@@ -38,10 +38,11 @@ public class SqlAuthDAOTest {
 
     @Test
     public void getAuthPositiveTest() throws DataAccessException{
-        AuthData expectedAuth=new AuthData("authToken","username");
-        authAccess.createAuth("authToken","username");
-        AuthData actualAuth=authAccess.getAuth("authToken");
-        assertEquals(expectedAuth,actualAuth);
+        AuthData expectedAuth=new AuthData("authToken1","username");
+        authAccess.createAuth("authToken1","username");
+        AuthData actualAuth=authAccess.getAuth("authToken1");
+        assertEquals(expectedAuth.authToken(),actualAuth.authToken());
+        assertEquals(expectedAuth.username(),actualAuth.username());
     }
 
     @Test

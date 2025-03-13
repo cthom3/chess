@@ -69,4 +69,17 @@ public class DatabaseManager {
             throw new DataAccessException(e.getMessage());
         }
     }
+
+    public static void configureDatabase(String[] createStatements) throws DataAccessException,SQLException{
+        createDatabase();
+        try (var connection=getConnection()){
+            for (var statement:createStatements){
+                try(var preparedStatement=connection.prepareStatement(statement)){
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (DataAccessException e){
+            throw new DataAccessException(e.getMessage());
+        }
+    }
 }

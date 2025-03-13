@@ -7,7 +7,15 @@ import static java.sql.Types.NULL;
 public class SqlAuthDAO implements AuthDAO{
     public SqlAuthDAO() {
         try {
-            configureDatabase();
+            String[] createStatements={
+                    """
+            CREATE TABLE IF NOT EXISTS auth(
+            authToken VARCHAR(255) NOT NULL,
+            username VARCHAR(255) NOT NULL
+            )
+            """
+            };
+            DatabaseManager.configureDatabase(createStatements);
         } catch (DataAccessException|SQLException e){
             throw new RuntimeException(e.getMessage());
         }
@@ -65,28 +73,6 @@ public class SqlAuthDAO implements AuthDAO{
                 ps.executeUpdate();
             }
         } catch (DataAccessException | SQLException e){
-            throw new DataAccessException(e.getMessage());
-        }
-    }
-
-    private final String[] createStatements={
-            """
-            CREATE TABLE IF NOT EXISTS auth(
-            authToken VARCHAR(255) NOT NULL,
-            username VARCHAR(255) NOT NULL
-            )
-            """
-    };
-
-    private void configureDatabase() throws DataAccessException,SQLException{
-        DatabaseManager.createDatabase(); //do I need this line of code? don't I just want to initialize this once
-        try (var conn=DatabaseManager.getConnection()){
-            for (var statement:createStatements){
-                try(var preparedStatement=conn.prepareStatement(statement)){
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (DataAccessException e){
             throw new DataAccessException(e.getMessage());
         }
     }
