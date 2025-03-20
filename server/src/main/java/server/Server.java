@@ -4,6 +4,8 @@ import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import dataaccess.*;
 import service.*;
+import service.clearrecords.ClearRequest;
+import service.clearrecords.ClearResult;
 import service.gamerecords.*;
 import service.userrecords.*;
 import spark.*;
