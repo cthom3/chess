@@ -1,18 +1,26 @@
 package client;
 
+import dataaccess.DataAccessException;
 import org.junit.jupiter.api.*;
 import server.Server;
+import service.clearrecords.ClearRequest;
+import service.userrecords.RegisterRequest;
+import ui.ServerFacade;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 public class ServerFacadeTests {
 
     private static Server server;
+    static ServerFacade facade;
 
     @BeforeAll
     public static void init() {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
+        facade=new ServerFacade(String.valueOf(port));
     }
 
     @AfterAll
@@ -20,10 +28,22 @@ public class ServerFacadeTests {
         server.stop();
     }
 
+    @BeforeEach
+    public void clearAll() throws DataAccessException {
+        ClearRequest request=new ClearRequest();
+        facade.clear(request);
+    }
+
 
     @Test
-    public void sampleTest() {
-        Assertions.assertTrue(true);
+    void registerPositive() throws Exception{
+        var authData=facade.register(new RegisterRequest("username","password","username@email.com"));
+        assertTrue(authData.authToken().length() <10);
+    }
+
+    @Test
+    void registerNegative() throws Exception{
+        var auth
     }
 
 }
