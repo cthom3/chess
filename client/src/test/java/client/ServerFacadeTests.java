@@ -86,12 +86,17 @@ public class ServerFacadeTests {
 
     @Test
     void createGameNegative() throws Exception {
-
+        CreateGameResult actual=facade.createGame(new CreateGameRequest("game1", "32393"));
+        assertTrue(actual.statusCode()!=200);
     }
 
     @Test
     void joinGamePositive() throws Exception {
-
+        facade.register(new RegisterRequest("username","password","username@email.com"));
+        LoginResult loggedin=facade.login(new LoginRequest("username", "password"));
+        CreateGameResult newGame=facade.createGame(new CreateGameRequest("game1", loggedin.authToken()));
+        JoinGameResult joinedGame=facade.joinGame(new JoinGameRequest("BLACK", newGame.gameID(),loggedin.authToken()));
+        assertTrue(joinedGame.statusCode()==200);
     }
 
     @Test
@@ -101,17 +106,28 @@ public class ServerFacadeTests {
 
     @Test
     void listGamesPositive() throws Exception {
-
+        facade.register(new RegisterRequest("username","password","username@email.com"));
+        LoginResult loggedin=facade.login(new LoginRequest("username", "password"));
+        CreateGameResult newGame=facade.createGame(new CreateGameRequest("game1", loggedin.authToken()));
+        JoinGameResult joinedGame=facade.joinGame(new JoinGameRequest("BLACK", newGame.gameID(),loggedin.authToken()));
+        ListGamesResult listedGames=facade.listGames(new ListGamesRequest(loggedin.authToken()));
+        assertTrue(listedGames.statusCode()==200);
     }
 
     @Test
     void listGamesNegative() throws Exception {
-
+        ListGamesResult listedGames=facade.listGames(new ListGamesRequest("234234"));
+        assertTrue(listedGames.statusCode()!=200);
     }
 
     @Test
     void clearPositive() throws Exception {
-
+        facade.register(new RegisterRequest("username","password","username@email.com"));
+        LoginResult loggedin=facade.login(new LoginRequest("username", "password"));
+        CreateGameResult newGame=facade.createGame(new CreateGameRequest("game1", loggedin.authToken()));
+        JoinGameResult joinedGame=facade.joinGame(new JoinGameRequest("BLACK", newGame.gameID(),loggedin.authToken()));
+        ClearResult cleared=facade.clear(new ClearRequest());
+        assertTrue(cleared.statusCode()==200);
     }
 
 
