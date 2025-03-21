@@ -4,9 +4,10 @@ import dataaccess.DataAccessException;
 import org.junit.jupiter.api.*;
 import server.Server;
 import service.clearrecords.ClearRequest;
-import service.userrecords.RegisterRequest;
+import service.userrecords.*;
 import ui.ServerFacade;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
@@ -43,7 +44,21 @@ public class ServerFacadeTests {
 
     @Test
     void registerNegative() throws Exception{
-        var auth
+        facade.register(new RegisterRequest("username","password","username@email.com"));
+        try {
+            facade.register(new RegisterRequest("username", "password", "username@email.com"));
+            assertTrue(false);
+        } catch (Exception e){
+            assertTrue(true);
+        }
     }
+
+    @Test
+    void loginPositive() throws Exception {
+        facade.register(new RegisterRequest("username","password","username@email.com"));
+        facade.login(new LoginRequest("username", "password"));
+
+    }
+
 
 }
