@@ -60,5 +60,55 @@ public class ServerFacadeTests {
 
     }
 
+    @Test
+    void loginNegative() throws Exception {
+
+    }
+
+    @Test
+    void logoutPositive() throws Exception {
+
+    }
+
+    @Test
+    void logoutNegative() throws Exception {
+
+    }
+
+    @Test
+    void createGamePositive() throws Exception {
+
+    }
+
+    @Test
+    void createGameNegative() throws Exception {
+
+    }
+
+    @Test
+    void joinGamePositive() throws Exception {
+
+    }
+
+    @Test
+    void joinGameNegative() throws Exception {
+
+    }
+
+    @Test
+    void listGamesPositive() throws Exception {
+
+    }
+
+    @Test
+    void listGamesNegative() throws Exception {
+
+    }
+
+    @Test
+    void clearPositive() throws Exception {
+
+    }
+
 
 }
