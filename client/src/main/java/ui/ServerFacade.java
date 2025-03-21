@@ -54,15 +54,16 @@ public class ServerFacade {
 
     private <T> T makeRequest(String method, String path,Object request, Class<T> responseClass) throws DataAccessException{
         try {
-            URL url=(new URI(serverUrl+path)).toURL();
-            HttpURLConnection http=(HttpURLConnection) url.openConnection();
+            URI uri=(new URI(serverUrl+path));
+            HttpURLConnection http=(HttpURLConnection) uri.toURL().openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
             writeRequestBody(request,http);
             http.connect();
             return readRequestBody(http,responseClass);
         } catch (Exception e){
-           throw new DataAccessException(e.getMessage());
+            throw new DataAccessException(e.getMessage());
+//           return handleExceptions(e,responseClass);
         }
     }
     private static void writeRequestBody(Object request, HttpURLConnection http) throws IOException {
@@ -87,6 +88,10 @@ public class ServerFacade {
         }
         return response;
     }
+
+//    private static <T> T handleExceptions(Exception e, Class<T> responseClass){
+//        int StatusCode=e.statusCode();
+//    }
 
 
 }
