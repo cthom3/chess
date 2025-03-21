@@ -3,12 +3,12 @@ package client;
 import dataaccess.DataAccessException;
 import org.junit.jupiter.api.*;
 import server.Server;
-import service.clearrecords.ClearRequest;
+import service.clearrecords.*;
+import service.gamerecords.*;
 import service.userrecords.*;
 import ui.ServerFacade;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ServerFacadeTests {
@@ -38,46 +38,50 @@ public class ServerFacadeTests {
 
     @Test
     void registerPositive() throws Exception{
-        var authData=facade.register(new RegisterRequest("username","password","username@email.com"));
-        assertTrue(authData.authToken().length() <10);
+        RegisterResult expected=facade.register(new RegisterRequest("username","password","username@email.com"));
+        assertTrue(expected.authToken().length() <10);
     }
 
     @Test
     void registerNegative() throws Exception{
         facade.register(new RegisterRequest("username","password","username@email.com"));
-        try {
-            facade.register(new RegisterRequest("username", "password", "username@email.com"));
-            assertTrue(false);
-        } catch (Exception e){
-            assertTrue(true);
-        }
+        RegisterResult expected=facade.register(new RegisterRequest("username", "password", "username@email.com"));
+        assertTrue(expected.statusCode()!=200);
     }
 
     @Test
     void loginPositive() throws Exception {
         facade.register(new RegisterRequest("username","password","username@email.com"));
-        facade.login(new LoginRequest("username", "password"));
-
+        LoginResult expected=facade.login(new LoginRequest("username", "password"));
+        assertTrue(expected.authToken().length()>10);
     }
 
     @Test
     void loginNegative() throws Exception {
-
+        LoginResult expected=facade.login(new LoginRequest("username", "password"));
+        assertTrue(expected.statusCode() !=200);
     }
 
     @Test
     void logoutPositive() throws Exception {
-
+        facade.register(new RegisterRequest("username","password","username@email.com"));
+        LoginResult loggedin=facade.login(new LoginRequest("username", "password"));
+        LogoutResult actual=facade.logout(new LogoutRequest(loggedin.authToken()));
+        assertTrue(actual.statusCode() == 200);
     }
 
     @Test
     void logoutNegative() throws Exception {
-
+        LogoutResult actual=facade.logout(new LogoutRequest("2000"));
+        assertTrue(actual.statusCode() != 200);
     }
 
     @Test
     void createGamePositive() throws Exception {
-
+        facade.register(new RegisterRequest("username","password","username@email.com"));
+        LoginResult loggedin=facade.login(new LoginRequest("username", "password"));
+        CreateGameResult actual=facade.createGame(new CreateGameRequest("game1", loggedin.authToken()));
+        assertNotNull(actual.gameID());
     }
 
     @Test
