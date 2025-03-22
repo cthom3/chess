@@ -43,9 +43,9 @@ public class ServerFacade {
         return this.makeRequest("PUT", path, request, JoinGameResult.class, request.authToken());
     }
 
-    public ListGamesResult listGames (ListGamesRequest request) throws DataAccessException {
+    public ListGamesResult listGames (ListGamesRequest listRequest) throws DataAccessException {
         var path="/game";
-        return this.makeRequest("GET", path, request, ListGamesResult.class, request.authToken());
+        return this.makeRequest("GET", path, listRequest, ListGamesResult.class, listRequest.authToken());
     }
 
     public ClearResult clear (ClearRequest request) throws DataAccessException {
@@ -58,33 +58,26 @@ public class ServerFacade {
             URI uri=(new URI(serverUrl+path));
             HttpURLConnection http=(HttpURLConnection) uri.toURL().openConnection();
             http.setRequestMethod(method);
-            http.setDoOutput(true);
-            writeRequestBody(path,request,http, authToken);
+            if (!Objects.equals(method, "GET")){
+                http.setDoOutput(true);
+            }
+            writeRequestBody(path,request,http, authToken, method);
             http.connect();
             return readRequestBody(http,responseClass);
         } catch (Exception e){
             throw new DataAccessException(e.getMessage());
         }
     }
-    private static void writeRequestBody(String path, Object request, HttpURLConnection http, String authToken) throws IOException {
+    private static void writeRequestBody(String path, Object request, HttpURLConnection http, String authToken, String method) throws IOException {
         if (request !=null){
             http.addRequestProperty("Content-Type", "application/json");
             if (!Objects.equals(path, "/user")){
                 http.addRequestProperty("Authorization", authToken);
             }
             String requestData=new Gson().toJson(request);
-            try (OutputStream requestBody=http.getOutputStream()){
-                requestBody.write(requestData.getBytes());
-            }
-        }
-    }
-
-    private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, DataAccessException {
-        var status=http.getResponseCode();
-        if (status !=200){
-            try (InputStream respErr=http.getErrorStream()){
-                if (respErr != null){
-                    throw new DataAccessException(respErr.toString());
+            if (!Objects.equals(method,"GET")){
+                try (OutputStream requestBody=http.getOutputStream()){
+                    requestBody.write(requestData.getBytes());
                 }
             }
         }

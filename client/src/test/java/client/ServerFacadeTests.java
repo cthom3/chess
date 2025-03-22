@@ -110,8 +110,8 @@ public class ServerFacadeTests {
     void listGamesPositive() throws Exception {
         facade.register(new RegisterRequest("username","password","username@email.com"));
         LoginResult loggedin=facade.login(new LoginRequest("username", "password"));
-        CreateGameResult newGame=facade.createGame(new CreateGameRequest("game1", loggedin.authToken()));
-        JoinGameResult joinedGame=facade.joinGame(new JoinGameRequest("BLACK", newGame.gameID(),loggedin.authToken()));
+        facade.createGame(new CreateGameRequest("game1", loggedin.authToken()));
+        facade.createGame(new CreateGameRequest("game2", loggedin.authToken()));
         ListGamesResult listedGames=facade.listGames(new ListGamesRequest(loggedin.authToken()));
         assertTrue(listedGames.statusCode()==200);
     }
