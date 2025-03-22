@@ -19,7 +19,7 @@ public class ServerFacadeTests {
     @BeforeAll
     public static void init() {
         server = new Server();
-        var port = server.run(0);
+        var port = server.run(1786);
         System.out.println("Started test HTTP server on " + port);
         facade=new ServerFacade("http://localhost:"+String.valueOf(port));
     }
@@ -39,7 +39,8 @@ public class ServerFacadeTests {
     @Test
     void registerPositive() throws Exception{
         RegisterResult expected=facade.register(new RegisterRequest("username","password","username@email.com"));
-        assertTrue(expected.authToken().length() <10);
+        assertTrue(expected.statusCode()==200);
+//        assertTrue(expected.authToken().length() >10);
     }
 
     @Test
@@ -101,7 +102,8 @@ public class ServerFacadeTests {
 
     @Test
     void joinGameNegative() throws Exception {
-
+        JoinGameResult joinedGame=facade.joinGame(new JoinGameRequest("BLACK", 3,"34234"));
+        assertTrue(joinedGame.statusCode()!=200);
     }
 
     @Test

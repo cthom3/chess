@@ -63,7 +63,6 @@ public class ServerFacade {
             return readRequestBody(http,responseClass);
         } catch (Exception e){
             throw new DataAccessException(e.getMessage());
-//           return handleExceptions(e,responseClass);
         }
     }
     private static void writeRequestBody(Object request, HttpURLConnection http) throws IOException {
@@ -76,22 +75,34 @@ public class ServerFacade {
         }
     }
 
-    private static <T> T readRequestBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
-        T response = null;
-        if (http.getContentLength() < 0){
-            try (InputStream responseBody=http.getInputStream()){
-                InputStreamReader reader = new InputStreamReader(responseBody);
-                if (responseClass != null){
-                    response= new Gson().fromJson(reader,responseClass);
+    private void throwIfNotSuccessful(HttpURLConnection http) throws IOException, DataAccessException {
+        var status=http.getResponseCode();
+        if (status !=200){
+            try (InputStream respErr=http.getErrorStream()){
+                if (respErr != null){
+                    throw new DataAccessException(respErr.toString());
                 }
             }
         }
-        return response;
     }
 
-//    private static <T> T handleExceptions(Exception e, Class<T> responseClass){
-//        int StatusCode=e.statusCode();
-//    }
+    private static <T> T readRequestBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
+        T response = null;
+        if (http.getResponseCode()==200){
+            InputStream responseBody=http.getInputStream();
+            InputStreamReader reader = new InputStreamReader(responseBody);
+            if (responseClass != null){
+                response= new Gson().fromJson(reader,responseClass);
+            }
+        } else {
+            InputStream responseBody=http.getErrorStream();
+            InputStreamReader reader = new InputStreamReader(responseBody);
+            if (responseClass != null){
+                response= new Gson().fromJson(reader,responseClass);
+            }
 
+        }
+        return response;
+    }
 
 }

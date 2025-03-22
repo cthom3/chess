@@ -46,28 +46,28 @@ public class Server {
         Spark.awaitStop();
     }
 
-    private Object register(Request req, Response res) throws DataAccessException{
+    private Object register(Request req, Response res) {
         RegisterRequest user= new Gson().fromJson(req.body(),RegisterRequest.class);
         RegisterResult newUser=userService.register(user);
         res.status(newUser.statusCode());
         return new Gson().toJson(newUser);
     }
 
-    private Object login (Request req, Response res) throws DataAccessException{
+    private Object login (Request req, Response res){
         LoginRequest loginData=new Gson().fromJson(req.body(), LoginRequest.class);
         LoginResult newLogin=userService.login(loginData);
         res.status(newLogin.statusCode());
         return new Gson().toJson(newLogin);
     }
 
-    private Object logout (Request req, Response res) throws DataAccessException{
+    private Object logout (Request req, Response res) {
         LogoutRequest logoutData=new LogoutRequest (req.headers("Authorization"));
         LogoutResult newLogout=userService.logout(logoutData);
         res.status(newLogout.statusCode());
         return new Gson().toJson(newLogout);
     }
 
-    private Object createGame (Request req, Response res) throws DataAccessException{
+    private Object createGame (Request req, Response res) {
         CreateGameRequest bodyData=new Gson().fromJson(req.body(),CreateGameRequest.class);
         CreateGameRequest gameData=new CreateGameRequest(bodyData.gameName(),req.headers("Authorization"));
         CreateGameResult newGame=gameService.createGame(gameData);
