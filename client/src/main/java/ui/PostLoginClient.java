@@ -1,10 +1,8 @@
 package ui;
 
 import dataaccess.DataAccessException;
-import service.gamerecords.CreateGameRequest;
-import service.gamerecords.CreateGameResult;
-import service.userrecords.LogoutRequest;
-import service.userrecords.LogoutResult;
+import service.gamerecords.*;
+import service.userrecords.*;
 
 import java.util.Arrays;
 
@@ -27,7 +25,7 @@ public class PostLoginClient {
             return switch (command){
                 case "logout" -> logout();
                 case "create" -> createGame(params);
-                case "list" -> listGames(params);
+                case "list" -> listGames();
                 case "play" -> playGame(params);
                 case "observe" -> obeserveGame(params);
                 default -> help();
@@ -53,6 +51,47 @@ public class PostLoginClient {
         }
         return ("Missing Information: need game name");
     }
+
+    public String listGames() throws DataAccessException {
+        ListGamesRequest request=new ListGamesRequest(authToken);
+        ListGamesResult result = server.listGames(request);
+        return result.games().toString();
+        // potentially need to fix how this is printed out
+    }
+
+    public String playGame(String... params) throws DataAccessException {
+        if (params.length >=2){
+           var gameNumber=params[0];
+           var playerColor=params[1];
+           JoinGameRequest request = new JoinGameRequest(playerColor,Integer.parseInt(gameNumber),authToken);
+           JoinGameResult result=server.joinGame(request);
+           return String.format("Successfully joined game as player");
+        }
+        return ("Missing Information");
+    }
+
+    public String observeGame(String...params) throws DataAccessException {
+        if (params.length >=1){
+            var gameNumber=params[0];
+            JoinGameRequest request = new JoinGameRequest(null,Integer.parseInt(gameNumber),authToken);
+            JoinGameResult result=server.joinGame(request);
+            return String.format("Successfully joined game as observer");
+        }
+        return ("Missing game number");
+    }
+
+    public String help(){
+        return """
+                - create <gameName>
+                - play <playerColor gameNumber>
+                - observer <gameNumber>
+                - list
+                - logout
+                - quit
+                - help
+                """;
+    }
+
 
 
 }
