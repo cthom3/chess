@@ -8,6 +8,8 @@ import service.userrecords.RegisterResult;
 import java.util.Scanner;
 import java.util.Arrays;
 
+import static ui.State.SIGNEDIN;
+
 public class PreLoginClient {
     private final ServerFacade server;
     private final String serverUrl;
@@ -39,7 +41,9 @@ public class PreLoginClient {
             var email= params[2];
             RegisterRequest request=new RegisterRequest(username, password, email);
             RegisterResult result=server.register(request);
-            return ("Registration Successful");
+            LoginRequest request1=new LoginRequest(username,password);
+            LoginResult result1= server.login(request1);
+            return String.format("Welcome, %s!", request.username());
         }
         return String.format("Error in Registration. Make sure you follow requested format");
     }

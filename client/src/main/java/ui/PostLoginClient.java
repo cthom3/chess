@@ -11,10 +11,9 @@ public class PostLoginClient {
     private final ServerFacade server;
     private final String serverUrl;
 
-    public PostLoginClient(String serverUrl,String authToken){
+    public PostLoginClient(String serverUrl){
         server=new ServerFacade(serverUrl);
         this.serverUrl=serverUrl;
-        this.authToken=authToken;
     }
 
     public String eval (String input)  {
@@ -27,7 +26,7 @@ public class PostLoginClient {
                 case "create" -> createGame(params);
                 case "list" -> listGames();
                 case "play" -> playGame(params);
-                case "observe" -> obeserveGame(params);
+                case "observe" -> observeGame(params);
                 default -> help();
             };
         } catch (Exception ex){
@@ -90,6 +89,10 @@ public class PostLoginClient {
                 - quit
                 - help
                 """;
+    }
+
+    public void setAuthToken(String newAuthToken){
+        this.authToken=newAuthToken;
     }
 
 
