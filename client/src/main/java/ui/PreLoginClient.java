@@ -19,7 +19,7 @@ public class PreLoginClient {
 
     public String eval (String input){
         try{
-            var tokens=input.toLowerCase().split(" ");
+            var tokens=input.split(" ");
             var command=(tokens.length>0) ? tokens[0]: "help";
             var params=Arrays.copyOfRange(tokens,1,tokens.length);
             return switch (command){
