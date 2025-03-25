@@ -38,7 +38,11 @@ public class Repl {
                     result=loggedinClient.eval(line);
                     System.out.print(result);
                     if (result.contains("Successfully")){
-                        GamePlayClient.main(new String[1]);
+                        if (result.contains("black")){
+                            GamePlayClient.main("black");
+                        } else {
+                            GamePlayClient.main("white");
+                        }
                     }
                 } catch (Throwable e){
                     System.out.print(e.toString());

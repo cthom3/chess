@@ -5,6 +5,7 @@ import service.gamerecords.*;
 import service.userrecords.*;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class PostLoginClient {
     private String authToken;
@@ -65,7 +66,11 @@ public class PostLoginClient {
            var playerColor=params[1];
            JoinGameRequest request = new JoinGameRequest(playerColor,Integer.parseInt(gameNumber),authToken);
            JoinGameResult result=server.joinGame(request);
-           return String.format("Successfully joined game as player");
+           if (Objects.equals(playerColor, "WHITE")){
+               return String.format("Successfully joined game as white player");
+           } else {
+               return String.format("Successfully joined game as black player");
+           }
         }
         return ("Missing Information");
     }
@@ -75,7 +80,8 @@ public class PostLoginClient {
             var gameNumber=params[0];
             JoinGameRequest request = new JoinGameRequest(null,Integer.parseInt(gameNumber),authToken);
             JoinGameResult result=server.joinGame(request);
-            return String.format("Successfully joined game as observer");
+            String message= String.format("Successfully joined game as observer");
+            return message;
         }
         return ("Missing game number");
     }
