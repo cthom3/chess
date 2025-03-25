@@ -84,7 +84,7 @@ public class PostLoginClient {
         return """
                 - create <gameName>
                 - play <playerColor gameNumber>
-                - observer <gameNumber>
+                - observe <gameNumber>
                 - list
                 - logout
                 - quit

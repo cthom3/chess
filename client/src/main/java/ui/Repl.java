@@ -36,10 +36,10 @@ public class Repl {
             } else {
                 try {
                     result=loggedinClient.eval(line);
-//                    if (result.contains("Successfully")){
-//                        GamePlayClient.main(new String[]);
-//                    }
                     System.out.print(result);
+                    if (result.contains("Successfully")){
+                        GamePlayClient.main(new String[1]);
+                    }
                 } catch (Throwable e){
                     System.out.print(e.toString());
                 }
