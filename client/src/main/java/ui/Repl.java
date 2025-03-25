@@ -26,14 +26,19 @@ public class Repl {
             if (state==SIGNEDOUT){
                 try {
                     result=loginClient.eval(line);
-                    setState(SIGNEDIN);
                     System.out.print(result);
+                    if (result.contains("Welcome")){
+                        setState(SIGNEDIN);
+                    }
                 } catch (Throwable e){
                     System.out.print(e.toString());
                 }
             } else {
                 try {
                     result=loggedinClient.eval(line);
+//                    if (result.contains("Successfully")){
+//                        GamePlayClient.main(new String[]);
+//                    }
                     System.out.print(result);
                 } catch (Throwable e){
                     System.out.print(e.toString());

@@ -27,6 +27,7 @@ public class PostLoginClient {
                 case "list" -> listGames();
                 case "play" -> playGame(params);
                 case "observe" -> observeGame(params);
+                case "quit" -> "quit";
                 default -> help();
             };
         } catch (Exception ex){
