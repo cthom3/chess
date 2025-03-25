@@ -38,8 +38,8 @@ public class ServerFacadeTests {
 
     @Test
     void registerPositive() throws Exception{
-        RegisterResult expected=facade.register(new RegisterRequest("username","password","username@email.com"));
-        assertTrue(expected.statusCode()==200);
+        RegisterResult actual=facade.register(new RegisterRequest("username","password","username@email.com"));
+        assertTrue(actual.statusCode()==200);
 //        assertTrue(expected.authToken().length() >10);
     }
 
@@ -113,6 +113,7 @@ public class ServerFacadeTests {
         facade.createGame(new CreateGameRequest("game1", loggedin.authToken()));
         facade.createGame(new CreateGameRequest("game2", loggedin.authToken()));
         ListGamesResult listedGames=facade.listGames(new ListGamesRequest(loggedin.authToken()));
+        assertNotNull(listedGames.games());
         assertTrue(listedGames.statusCode()==200);
     }
 

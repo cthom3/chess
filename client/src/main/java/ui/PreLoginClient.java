@@ -44,7 +44,7 @@ public class PreLoginClient {
             RegisterResult result=server.register(request);
             LoginRequest request1=new LoginRequest(username,password);
             LoginResult result1= server.login(request1);
-            return String.format("Welcome, %s!", request.username());
+            return String.format("Welcome %s",result.username()+" "+result.authToken());
         }
         return String.format("Error in Registration. Make sure you follow requested format");
     }
@@ -56,7 +56,10 @@ public class PreLoginClient {
             var password=params[1];
             LoginRequest request=new LoginRequest(username,password);
             LoginResult result= server.login(request);
-            return String.format("Welcome, %s!", request.username());
+            if (result.statusCode()!=200){
+                return "Not a registered user";
+            }
+            return String.format("Welcome %s",result.username()+" "+result.authToken());
         }
         return ("Not a registered user");
     }

@@ -26,9 +26,12 @@ public class Repl {
             if (state==SIGNEDOUT){
                 try {
                     result=loginClient.eval(line);
-                    System.out.print(result);
+                    var tokens=result.split(" ");
+                    String authToken = tokens[2];
+                    System.out.print(tokens[0]+" "+tokens[1]);
                     if (result.contains("Welcome")){
                         setState(SIGNEDIN);
+                        loggedinClient.setAuthToken(authToken);
                     }
                 } catch (Throwable e){
                     System.out.print(e.toString());
