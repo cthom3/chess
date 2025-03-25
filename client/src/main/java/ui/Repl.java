@@ -1,17 +1,18 @@
 package ui;
 import java.util.Scanner;
 
-import static ui.State.SIGNEDIN;
-import static ui.State.SIGNEDOUT;
+import static ui.State.*;
 
 public class Repl {
     private final PreLoginClient loginClient;
     private final PostLoginClient loggedinClient;
+    private final GamePlayClient gameClient;
     private State state= SIGNEDOUT;
 
     public Repl(String serverUrl){
         loginClient=new PreLoginClient(serverUrl);
         loggedinClient=new PostLoginClient(serverUrl);
+        gameClient=new GamePlayClient(serverUrl);
     }
 
     public void run() {
@@ -38,20 +39,32 @@ public class Repl {
                 } catch (Throwable e){
                     System.out.print(e.toString());
                 }
-            } else {
+            } else if (state==SIGNEDIN){
                 try {
                     result=loggedinClient.eval(line);
                     System.out.print(result);
                     if (result.contains("Successfully")){
                         if (result.contains("black")){
-                            GamePlayClient.main("black");
+                            CreateGameBoard.main("black");
+                            setState(INGAME);
                         } else {
-                            GamePlayClient.main("white");
+                            CreateGameBoard.main("white");
+                            setState(INGAME);
                         }
                     } else if (result.contains("Logout")){
                         setState(SIGNEDOUT);
                     }
                 } catch (Throwable e){
+                    System.out.print(e.toString());
+                }
+            } else {
+                try{
+                    result=gameClient.eval(line);
+                    System.out.print(result);
+                    if (result.contains("left")){
+                        setState(SIGNEDIN);
+                    }
+                } catch (Throwable e) {
                     System.out.print(e.toString());
                 }
             }
