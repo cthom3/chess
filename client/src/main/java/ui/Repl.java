@@ -26,12 +26,14 @@ public class Repl {
             if (state==SIGNEDOUT){
                 try {
                     result=loginClient.eval(line);
-                    var tokens=result.split(" ");
-                    String authToken = tokens[2];
-                    System.out.print(tokens[0]+" "+tokens[1]);
                     if (result.contains("Welcome")){
+                        var tokens=result.split(" ");
+                        String authTokenNew = tokens[2];
+                        loggedinClient.setAuthToken(authTokenNew);
+                        System.out.print(tokens[0]+" "+tokens[1]);
                         setState(SIGNEDIN);
-                        loggedinClient.setAuthToken(authToken);
+                    } else {
+                        System.out.print(result);
                     }
                 } catch (Throwable e){
                     System.out.print(e.toString());
@@ -46,6 +48,8 @@ public class Repl {
                         } else {
                             GamePlayClient.main("white");
                         }
+                    } else if (result.contains("Logout")){
+                        setState(SIGNEDOUT);
                     }
                 } catch (Throwable e){
                     System.out.print(e.toString());

@@ -20,6 +20,7 @@ public class PostLoginClient {
         server=new ServerFacade(serverUrl);
         this.serverUrl=serverUrl;
         gameList=new HashMap<>();
+        authToken= null;
     }
 
     public String eval (String input)  {
@@ -62,6 +63,9 @@ public class PostLoginClient {
         ListGamesRequest request=new ListGamesRequest(authToken);
         ListGamesResult result = server.listGames(request);
         if (result.games() != null) {
+            if (result.games().isEmpty()){
+                return "No games";
+            }
             gameList.clear();
             Integer i=1;
             String finalString="#: gameName, whiteUsername, blackUsername";
@@ -70,13 +74,11 @@ public class PostLoginClient {
                 String newString=("\n" + i.toString()+ ": "+game.gameName()+", "+game.whiteUsername()+", "+game.blackUsername());
                 finalString=finalString.concat(newString);
                 i++;
-
             }
             return finalString;
         } else{
             return "No games found";
         }
-        // potentially need to fix how this is printed out
     }
 
     public String playGame(String... params) throws DataAccessException {

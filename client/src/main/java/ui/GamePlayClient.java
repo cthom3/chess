@@ -11,20 +11,28 @@ public class GamePlayClient {
         var out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
         out.println();
-        drawHeaders(out);
+        drawHeaders(out, playerColor);
         drawChessBoard(out, playerColor);
-        drawHeaders(out);
+        drawHeaders(out, playerColor);
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
     }
 
-    private static void drawHeaders(PrintStream out){
-        out.print(SET_BG_COLOR_BLACK);
-        out.print(SET_TEXT_COLOR_WHITE);
-        String[] headers = {"   "," a "," b "," c "," d "," e "," f "," g "," h "};
-        for (int boardCol = 0; boardCol<BOARD_SIZE+1; ++boardCol){
+    private static void drawHeaders(PrintStream out, String playerColor){
+        out.print(SET_BG_COLOR_WHITE);
+        out.print(SET_TEXT_COLOR_BLACK);
+        if (Objects.equals(playerColor, "WHITE")) {
+            String[] headers = {"   ", " a ", " b ", " c ", " d ", " e ", " f ", " g ", " h ","   "};
+            for (int boardCol = 0; boardCol<BOARD_SIZE+2; ++boardCol) {
+                out.print((headers[boardCol]));
+            }
+        } else {
+            String[] headers = {"   ", " h ", " g ", " f ", " e ", " d ", " c ", " b ", " a ","   "};
+            for (int boardCol = 0; boardCol<BOARD_SIZE+2; ++boardCol){
             out.print((headers[boardCol]));
+            }
         }
+        out.print(SET_BG_COLOR_BLACK);
         out.println();
     }
 
@@ -39,9 +47,9 @@ public class GamePlayClient {
             drawRow(5,"   ",SET_TEXT_COLOR_RED,out);
             drawRow(4,"   ",SET_TEXT_COLOR_RED,out);
             drawRow(3,"   ",SET_TEXT_COLOR_RED,out);
-            drawRow(2," p ",SET_TEXT_COLOR_RED,out);
+            drawRow(2," p ",SET_TEXT_COLOR_WHITE,out);
 //            String[] headers2 = {WHITE_ROOK,WHITE_KNIGHT,WHITE_BISHOP,WHITE_KING,WHITE_QUEEN,WHITE_BISHOP,WHITE_KNIGHT,WHITE_ROOK};
-            drawFirstRow(1,headers1,SET_TEXT_COLOR_RED,out);
+            drawFirstRow(1,headers1,SET_TEXT_COLOR_WHITE,out);
         } else {
 //            String[] headers1 = {WHITE_ROOK,WHITE_KNIGHT,WHITE_BISHOP,WHITE_KING,WHITE_QUEEN,WHITE_BISHOP,WHITE_KNIGHT,WHITE_ROOK};
             drawFirstRow(1,headers1,SET_TEXT_COLOR_RED,out);
@@ -57,7 +65,8 @@ public class GamePlayClient {
     }
 
     private static void drawFirstRow(int row, String[] headers, String textColor,PrintStream out){
-        out.print(SET_BG_COLOR_BLACK);
+        out.print(SET_BG_COLOR_WHITE);
+        out.print(SET_TEXT_COLOR_BLACK);
         out.print(" "+row+" ");
         out.print(textColor);
         for (int boardCol = 0; boardCol<BOARD_SIZE; ++boardCol) {
@@ -68,14 +77,17 @@ public class GamePlayClient {
             }
             out.print((headers[boardCol]));
         }
+        out.print(SET_BG_COLOR_WHITE);
+        out.print(SET_TEXT_COLOR_BLACK);
+        out.print(" "+row+" ");
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
-        out.print(" "+row+" ");
         out.println();
     }
 
     private static void drawRow(int row, String symbol, String color,PrintStream out){
-        out.print(SET_BG_COLOR_BLACK);
+        out.print(SET_BG_COLOR_WHITE);
+        out.print(SET_TEXT_COLOR_BLACK);
         out.print(" "+row+" ");
         out.print(color);
         for (int boardCol = 0; boardCol<BOARD_SIZE; ++boardCol) {
@@ -86,9 +98,11 @@ public class GamePlayClient {
             }
             out.print(symbol);
         }
+        out.print(SET_BG_COLOR_WHITE);
+        out.print(SET_TEXT_COLOR_BLACK);
+        out.print(" "+row+" ");
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
-        out.print(" "+row+" ");
         out.println();
     }
 }

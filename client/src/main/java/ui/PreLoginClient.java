@@ -42,26 +42,29 @@ public class PreLoginClient {
             var email= params[2];
             RegisterRequest request=new RegisterRequest(username, password, email);
             RegisterResult result=server.register(request);
-            LoginRequest request1=new LoginRequest(username,password);
-            LoginResult result1= server.login(request1);
-            return String.format("Welcome %s",result.username()+" "+result.authToken());
+            if (result.statusCode()==200){
+                LoginRequest request1=new LoginRequest(username,password);
+                LoginResult result1= server.login(request1);
+                return String.format("Welcome, %s",result1.username()+" "+result1.authToken());
+            } else {
+                return (result.message());
+            }
         }
-        return String.format("Error in Registration. Make sure you follow requested format");
+        return String.format("Missing information: <username password email>");
     }
 
     public String login(String... params) throws DataAccessException{
-
         if (params.length>=2){
             var username=params[0];
             var password=params[1];
             LoginRequest request=new LoginRequest(username,password);
             LoginResult result= server.login(request);
             if (result.statusCode()!=200){
-                return "Not a registered user";
+                return result.message();
             }
-            return String.format("Welcome %s",result.username()+" "+result.authToken());
+            return String.format("Welcome, %s",result.username()+" "+result.authToken());
         }
-        return ("Not a registered user");
+        return ("Missing information: <username password>");
     }
 
     public String help(){
