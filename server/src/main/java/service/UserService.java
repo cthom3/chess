@@ -5,7 +5,7 @@ import dataaccess.DataAccessException;
 import model.UserData;
 import model.AuthData;
 import org.mindrot.jbcrypt.BCrypt;
-import service.userrecords.*;
+import userrecords.*;
 
 import java.util.UUID;
 

@@ -1,4 +1,4 @@
-package service.clearrecords;
+package clearrecords;
 
 public record ClearResult(int statusCode, String message) {
 }

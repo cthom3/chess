@@ -3,12 +3,12 @@ import com.google.gson.Gson;
 
 import dataaccess.DataAccessException;
 import dataaccess.*;
+import gamerecords.*;
 import service.*;
-import service.clearrecords.ClearRequest;
-import service.clearrecords.ClearResult;
-import service.gamerecords.*;
-import service.userrecords.*;
+import clearrecords.ClearRequest;
+import clearrecords.ClearResult;
 import spark.*;
+import userrecords.*;
 
 public class Server {
     private final UserDAO userDAO=new SqlUserDAO();

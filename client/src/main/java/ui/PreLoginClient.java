@@ -1,10 +1,7 @@
 package ui;
-import service.userrecords.*;
+import userrecords.*;
 
-import java.util.Scanner;
 import java.util.Arrays;
-
-import static ui.State.SIGNEDIN;
 
 public class PreLoginClient {
     private final ServerFacade server;

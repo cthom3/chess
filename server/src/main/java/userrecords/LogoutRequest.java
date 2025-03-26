@@ -1,4 +1,4 @@
-package service.userrecords;
+package userrecords;
 
 public record LogoutRequest(String authToken) {
 }

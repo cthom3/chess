@@ -2,12 +2,12 @@ package service;
 import dataaccess.GameDAO;
 import dataaccess.AuthDAO;
 import dataaccess.DataAccessException;
+import gamerecords.*;
 import model.GameData;
 import model.AuthData;
 
 import java.util.Collection;
 import chess.ChessGame;
-import service.gamerecords.*;
 
 public class GameService {
     private final GameDAO gameAccess;

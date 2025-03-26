@@ -1,4 +1,4 @@
-package service.userrecords;
+package userrecords;
 
 public record RegisterResult(
         int statusCode,

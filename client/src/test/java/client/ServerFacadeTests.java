@@ -1,12 +1,13 @@
 package client;
 
+import clearrecords.ClearRequest;
+import clearrecords.ClearResult;
 import dataaccess.DataAccessException;
+import gamerecords.*;
 import org.junit.jupiter.api.*;
 import server.Server;
-import service.clearrecords.*;
-import service.gamerecords.*;
-import service.userrecords.*;
 import ui.ServerFacade;
+import userrecords.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 

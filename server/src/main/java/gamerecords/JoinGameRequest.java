@@ -1,4 +1,4 @@
-package service.gamerecords;
+package gamerecords;
 
 public record JoinGameRequest(String playerColor,
                               int gameID,

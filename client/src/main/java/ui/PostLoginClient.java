@@ -1,8 +1,9 @@
 package ui;
 
+import gamerecords.*;
 import model.GameData;
-import service.gamerecords.*;
-import service.userrecords.*;
+import userrecords.LogoutRequest;
+import userrecords.LogoutResult;
 
 import java.util.Arrays;
 import java.util.Map;

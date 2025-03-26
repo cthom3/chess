@@ -1,10 +1,11 @@
 package ui;
 
 
+import clearrecords.ClearRequest;
+import clearrecords.ClearResult;
 import com.google.gson.Gson;
-import service.userrecords.*;
-import service.gamerecords.*;
-import service.clearrecords.*;
+import gamerecords.*;
+import userrecords.*;
 
 import java.net.*;
 import java.io.*;
