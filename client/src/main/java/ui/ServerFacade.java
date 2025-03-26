@@ -4,8 +4,6 @@ package ui;
 import clearrecords.ClearRequest;
 import clearrecords.ClearResult;
 import com.google.gson.Gson;
-import gamerecords.*;
-import userrecords.*;
 
 import java.net.*;
 import java.io.*;

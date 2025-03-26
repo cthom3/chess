@@ -1,6 +1,5 @@
 package ui;
 
-import gamerecords.*;
 import model.GameData;
 import userrecords.LogoutRequest;
 import userrecords.LogoutResult;
