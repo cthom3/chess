@@ -43,10 +43,13 @@ public class Repl {
                 try {
                     result=loggedinClient.eval(line);
                     System.out.print(result);
-                    if (result.contains("black")){
+                    if (result.contains("black")& result.contains("Successfully")){
                         CreateGameBoard.main("black");
                         setState(INGAME);
-                    } else {
+                    } else if (result.contains("white")& result.contains("Successfully")) {
+                        CreateGameBoard.main("white");
+                        setState(INGAME);
+                    } else if (result.contains("observer")& result.contains("Successfully")) {
                         CreateGameBoard.main("white");
                         setState(INGAME);
                     }
