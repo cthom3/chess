@@ -43,15 +43,14 @@ public class Repl {
                 try {
                     result=loggedinClient.eval(line);
                     System.out.print(result);
-                    if (result.contains("Successfully")){
-                        if (result.contains("black")){
-                            CreateGameBoard.main("black");
-                            setState(INGAME);
-                        } else {
-                            CreateGameBoard.main("white");
-                            setState(INGAME);
-                        }
-                    } else if (result.contains("Logout")){
+                    if (result.contains("black")){
+                        CreateGameBoard.main("black");
+                        setState(INGAME);
+                    } else {
+                        CreateGameBoard.main("white");
+                        setState(INGAME);
+                    }
+                    if (result.contains("Logout")){
                         setState(SIGNEDOUT);
                     }
                 } catch (Throwable e){
