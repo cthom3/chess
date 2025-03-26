@@ -1,6 +1,5 @@
 package ui;
 
-import dataaccess.DataAccessException;
 import model.GameData;
 import service.gamerecords.*;
 import service.userrecords.*;
@@ -42,14 +41,14 @@ public class PostLoginClient {
         }
     }
 
-    public String logout() throws DataAccessException{
+    public String logout() throws Exception{
         LogoutRequest request=new LogoutRequest(authToken);
         LogoutResult result=server.logout(request);
         authToken=null;
         return ("Logout Successful");
     }
 
-    public String createGame(String... params) throws DataAccessException{
+    public String createGame(String... params) throws Exception{
         if (params.length >=1){
             var gameName=params[0];
             CreateGameRequest request = new CreateGameRequest(gameName,authToken);
@@ -59,7 +58,7 @@ public class PostLoginClient {
         return ("Missing Information: need game name");
     }
 
-    public String listGames() throws DataAccessException {
+    public String listGames() throws Exception {
         ListGamesRequest request=new ListGamesRequest(authToken);
         ListGamesResult result = server.listGames(request);
         if (result.games() != null) {
@@ -81,7 +80,7 @@ public class PostLoginClient {
         }
     }
 
-    public String playGame(String... params) throws DataAccessException {
+    public String playGame(String... params) throws Exception {
         if (params.length >=2){
            var gameNumber=params[0];
            Integer gameID=gameList.get(Integer.parseInt(gameNumber));
@@ -97,7 +96,7 @@ public class PostLoginClient {
         return ("Missing Information");
     }
 
-    public String observeGame(String...params) throws DataAccessException {
+    public String observeGame(String...params) throws Exception {
         if (params.length >=1){
             var gameNumber=params[0];
             Integer gameID=gameList.get(Integer.parseInt(gameNumber));

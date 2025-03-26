@@ -2,7 +2,6 @@ package ui;
 
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
 import service.userrecords.*;
 import service.gamerecords.*;
 import service.clearrecords.*;
@@ -17,43 +16,43 @@ public class ServerFacade {
     public ServerFacade(String url){
         serverUrl = url;
     }
-    public RegisterResult register(RegisterRequest request) throws DataAccessException {
+    public RegisterResult register(RegisterRequest request) throws Exception {
         var path="/user";
         return this.makeRequest("POST", path, request, RegisterResult.class, null);
     }
 
-    public LoginResult login(LoginRequest request) throws DataAccessException {
+    public LoginResult login(LoginRequest request) throws Exception {
         var path="/session";
         return this.makeRequest("POST", path, request, LoginResult.class, null);
 
     }
 
-    public LogoutResult logout(LogoutRequest request) throws DataAccessException {
+    public LogoutResult logout(LogoutRequest request) throws Exception {
         var path="/session";
         return this.makeRequest("DELETE", path, request, LogoutResult.class, request.authToken());
     }
 
-    public CreateGameResult createGame (CreateGameRequest request) throws DataAccessException {
+    public CreateGameResult createGame (CreateGameRequest request) throws Exception {
         var path="/game";
         return this.makeRequest("POST", path, request, CreateGameResult.class, request.authToken());
     }
 
-    public JoinGameResult joinGame (JoinGameRequest request) throws DataAccessException {
+    public JoinGameResult joinGame (JoinGameRequest request) throws Exception {
         var path="/game";
         return this.makeRequest("PUT", path, request, JoinGameResult.class, request.authToken());
     }
 
-    public ListGamesResult listGames (ListGamesRequest listRequest) throws DataAccessException {
+    public ListGamesResult listGames (ListGamesRequest listRequest) throws Exception {
         var path="/game";
         return this.makeRequest("GET", path, listRequest, ListGamesResult.class, listRequest.authToken());
     }
 
-    public ClearResult clear (ClearRequest request) throws DataAccessException {
+    public ClearResult clear (ClearRequest request) throws Exception {
         var path="/db";
         return this.makeRequest("DELETE", path, request, ClearResult.class, null);
     }
 
-    private <T> T makeRequest(String method, String path,Object request, Class<T> responseClass, String authToken) throws DataAccessException{
+    private <T> T makeRequest(String method, String path,Object request, Class<T> responseClass, String authToken) throws Exception {
         try {
             URI uri=(new URI(serverUrl+path));
             HttpURLConnection http=(HttpURLConnection) uri.toURL().openConnection();
@@ -65,7 +64,7 @@ public class ServerFacade {
             http.connect();
             return readRequestBody(http,responseClass);
         } catch (Exception e){
-            throw new DataAccessException(e.getMessage());
+            throw new Exception(e.getMessage());
         }
     }
     private static void writeRequestBody(String path, Object request, HttpURLConnection http, String authToken, String method) throws IOException {

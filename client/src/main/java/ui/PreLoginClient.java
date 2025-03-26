@@ -1,9 +1,5 @@
 package ui;
-import dataaccess.DataAccessException;
-import service.userrecords.LoginRequest;
-import service.userrecords.LoginResult;
-import service.userrecords.RegisterRequest;
-import service.userrecords.RegisterResult;
+import service.userrecords.*;
 
 import java.util.Scanner;
 import java.util.Arrays;
@@ -35,7 +31,7 @@ public class PreLoginClient {
         }
     }
 
-    public String register(String... params) throws DataAccessException {
+    public String register(String... params) throws Exception {
         if (params.length >= 3) {
             var username=params[0];
             var password=params[1];
@@ -53,7 +49,7 @@ public class PreLoginClient {
         return String.format("Missing information: <username password email>");
     }
 
-    public String login(String... params) throws DataAccessException{
+    public String login(String... params) throws Exception{
         if (params.length>=2){
             var username=params[0];
             var password=params[1];
