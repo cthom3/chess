@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import model.UserData;
+import userrecords.*;
 
 public class UserServiceTest {
     private final UserDAO userAccess=new MemoryUserDAO();

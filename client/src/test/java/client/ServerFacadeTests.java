@@ -3,9 +3,11 @@ package client;
 import clearrecords.ClearRequest;
 import clearrecords.ClearResult;
 import dataaccess.DataAccessException;
+import gamerecords.*;
 import org.junit.jupiter.api.*;
 import server.Server;
 import ui.ServerFacade;
+import userrecords.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,7 +31,7 @@ public class ServerFacadeTests {
     }
 
     @BeforeEach
-    public void clearAll() throws DataAccessException {
+    public void clearAll() throws Exception {
         ClearRequest request=new ClearRequest();
         facade.clear(request);
     }
