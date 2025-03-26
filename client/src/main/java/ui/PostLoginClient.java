@@ -84,10 +84,16 @@ public class PostLoginClient {
     public String playGame(String... params) throws Exception {
         if (params.length >=2){
            var gameNumber=params[0];
+           if (gameNumber.equals("WHITE")| gameNumber.equals("BLACK")){
+               return "Wrong order <gameNumber [WHITE | BLACK]>";
+           }
            Integer gameID=gameList.get(Integer.parseInt(gameNumber));
            var playerColor=params[1];
            JoinGameRequest request = new JoinGameRequest(playerColor,gameID,authToken);
            JoinGameResult result=server.joinGame(request);
+           if (result.statusCode()!=200){
+               return "Spot already full. Choose another spot or create Game.";
+           }
            if (Objects.equals(playerColor, "WHITE")){
                return String.format("Successfully joined game as white player");
            } else {
