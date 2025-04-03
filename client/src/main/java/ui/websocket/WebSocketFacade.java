@@ -5,4 +5,5 @@ import webSocketMessages.Action;
 import webSocketMessages.Notification;
 
 public class WebSocketFacade {
+
 }
