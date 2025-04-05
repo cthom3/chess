@@ -1,4 +1,4 @@
-package messages;
+package webSocketMessages;
 import com.google.gson.Gson;
 
 public record Notification(Type type, String message) {

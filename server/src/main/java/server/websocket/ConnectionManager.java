@@ -1,8 +1,11 @@
 package server.websocket;
 
 import org.eclipse.jetty.websocket.api.Session;
+
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.ArrayList;
+import webSocketMessages.Notification;
 
 public class ConnectionManager {
     public final ConcurrentHashMap<String,Connection> connections= new ConcurrentHashMap<>();
@@ -16,7 +19,7 @@ public class ConnectionManager {
         connections.remove(currentUser);
     }
 
-    public void broadcast(String excludeUser, Notification notification){
+    public void broadcast(String excludeUser, Notification notification) throws IOException {
         ArrayList<Connection> removeList=new ArrayList<Connection>();
         for (var connection: connections.values()){
             if (connection.session.isOpen()){

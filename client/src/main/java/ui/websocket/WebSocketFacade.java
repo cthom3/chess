@@ -1,8 +1,7 @@
 package ui.websocket;
 
 import com.google.gson.Gson;
-import messages.Action;
-import messages.Notification;
+import webSocketMessages.Notification;
 import javax.websocket.*;
 import java.net.URI;
 
