@@ -31,21 +31,21 @@ public class GamePlayClient {
     }
 
     public String redraw(){
-
+        return "new board";
     }
 
     public String movePiece(){
-
+        return "new location";
     }
 
     public String resign(){
         System.out.println("Are you sure you want to resign the game?");
         //read input;
-
+        return "resigned";
     }
 
     public String highlight(){
-
+        return "highlighted";
     }
 
     public String help(){

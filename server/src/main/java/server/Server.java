@@ -9,6 +9,7 @@ import clearrecords.ClearRequest;
 import clearrecords.ClearResult;
 import spark.*;
 import userrecords.*;
+import server.websocket.WebSocketHandler;
 
 public class Server {
     private final UserDAO userDAO=new SqlUserDAO();
@@ -17,6 +18,7 @@ public class Server {
     private final UserService userService=new UserService(userDAO,authDAO);
     private final GameService gameService=new GameService(gameDAO,authDAO);
     private final ClearService clearService= new ClearService(userDAO,authDAO,gameDAO);
+    private final WebSocketHandler webSocketHandler=new WebSocketHandler();
 
     public Server (){}
 
@@ -26,6 +28,7 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
+        Spark.webSocket("/ws",webSocketHandler);
         Spark.post("/user",this::register);
         Spark.post("/session",this::login);
         Spark.delete("/session",this::logout);

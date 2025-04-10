@@ -2,6 +2,9 @@ package ui;
 
 
 import model.GameData;
+import server.websocket.ConnectionManager;
+import ui.websocket.NotificationHandler;
+import ui.websocket.WebSocketFacade;
 import userrecords.*;
 import gamerecords.*;
 
@@ -15,12 +18,17 @@ public class PostLoginClient {
     private final ServerFacade server;
     private final String serverUrl;
     private final Map<Integer,Integer> gameList;
+    private WebSocketFacade ws;
+    private final NotificationHandler notificationHandler;
+    ConnectionManager allConnections= new ConnectionManager();
+
 
     public PostLoginClient(String serverUrl){
         server=new ServerFacade(serverUrl);
         this.serverUrl=serverUrl;
         gameList=new HashMap<>();
         authToken= null;
+
     }
 
     public String eval (String input)  {
@@ -94,6 +102,8 @@ public class PostLoginClient {
            if (result.statusCode()!=200){
                return "Spot already full. Choose another spot or create Game.";
            }
+           ws = new WebSocketFacade(serverUrl, notificationHandler);
+           allConnections.add(userName,session);
            if (Objects.equals(playerColor, "WHITE")){
                return String.format("Successfully joined game as white player");
            } else {
@@ -107,8 +117,8 @@ public class PostLoginClient {
         if (params.length >=1){
             var gameNumber=params[0];
             Integer gameID=gameList.get(Integer.parseInt(gameNumber));
-            JoinGameRequest request = new JoinGameRequest(null,gameID,authToken);
-            JoinGameResult result=server.joinGame(request);
+            ws = new WebSocketFacade(serverUrl, notificationHandler);
+
             String message= String.format("Successfully joined game as observer");
             return message;
         }

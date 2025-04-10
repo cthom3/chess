@@ -1,7 +1,7 @@
 package webSocketMessages;
 import com.google.gson.Gson;
 
-public record Action (Type type, String currentUser){
+public record Action (Type type, String currentUser, String color){
     public enum Type {
         PLAYER,
         OBSERVER,

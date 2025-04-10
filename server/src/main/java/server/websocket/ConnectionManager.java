@@ -10,6 +10,8 @@ import webSocketMessages.Notification;
 public class ConnectionManager {
     public final ConcurrentHashMap<String,Connection> connections= new ConcurrentHashMap<>();
 
+    public ConnectionManager(){};
+
     public void add(String currentUser, Session session){
         var connection = new Connection(currentUser,session);
         connections.put(currentUser,connection);
