@@ -2,7 +2,10 @@ package ui.websocket;
 
 import com.google.gson.Gson;
 import webSocketMessages.Notification;
+import websocket.commands.UserGameCommand;
+
 import javax.websocket.*;
+import java.io.IOException;
 import java.net.URI;
 
 
@@ -31,6 +34,26 @@ public class WebSocketFacade extends Endpoint{
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig){
+    }
+
+    public void connect(String authToken, Integer gameID) throws IOException {
+        UserGameCommand command=new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+        session.getBasicRemote().sendText(new Gson().toJson(command));
+    }
+
+    public void makeMove(String authToken,Integer gameID) throws IOException {
+        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,authToken, gameID);
+        session.getBasicRemote().sendText(new Gson().toJson(command));
+    }
+
+    public void leave(String authToken, Integer gameID){
+        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.LEAVE,authToken, gameID);
+        session.getBasicRemote().sendText(new Gson().toJson(command));
+    }
+
+    public void resign (String authToken, Integer gameID){
+        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.RESIGN,authToken, gameID);
+        session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 
 

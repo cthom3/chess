@@ -8,19 +8,15 @@ import ui.websocket.WebSocketFacade;
 import userrecords.*;
 import gamerecords.*;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 public class PostLoginClient {
     private String authToken;
     private final ServerFacade server;
     private final String serverUrl;
     private final Map<Integer,Integer> gameList;
-    private WebSocketFacade ws;
+    private final Map<Integer, ArrayList> connectionsList;
     private final NotificationHandler notificationHandler;
-    ConnectionManager allConnections= new ConnectionManager();
 
 
     public PostLoginClient(String serverUrl){
@@ -28,7 +24,8 @@ public class PostLoginClient {
         this.serverUrl=serverUrl;
         gameList=new HashMap<>();
         authToken= null;
-
+        connectionsList =new HashMap<>();
+        notificationHandler=new NotificationHandler();
     }
 
     public String eval (String input)  {
@@ -62,6 +59,7 @@ public class PostLoginClient {
             var gameName=params[0];
             CreateGameRequest request = new CreateGameRequest(gameName,authToken);
             CreateGameResult result=server.createGame(request);
+            connectionsList.put(result.gameID(),new ArrayList<>());
             return String.format("%s created", gameName);
         }
         return ("Missing Information: need game name");
@@ -99,11 +97,11 @@ public class PostLoginClient {
            var playerColor=params[1];
            JoinGameRequest request = new JoinGameRequest(playerColor,gameID,authToken);
            JoinGameResult result=server.joinGame(request);
-           if (result.statusCode()!=200){
-               return "Spot already full. Choose another spot or create Game.";
-           }
-           ws = new WebSocketFacade(serverUrl, notificationHandler);
-           allConnections.add(userName,session);
+            if (result.statusCode()!=200){
+                return "Spot already full. Choose another spot or create Game.";
+            }
+           WebSocketFacade webSocketFacade=new WebSocketFacade(serverUrl, notificationHandler);
+           webSocketFacade.connect(authToken,gameID);
            if (Objects.equals(playerColor, "WHITE")){
                return String.format("Successfully joined game as white player");
            } else {
@@ -117,8 +115,8 @@ public class PostLoginClient {
         if (params.length >=1){
             var gameNumber=params[0];
             Integer gameID=gameList.get(Integer.parseInt(gameNumber));
-            ws = new WebSocketFacade(serverUrl, notificationHandler);
-
+            WebSocketFacade webSocketFacade=new WebSocketFacade(serverUrl, notificationHandler);
+            webSocketFacade.connect(authToken,gameID);
             String message= String.format("Successfully joined game as observer");
             return message;
         }
