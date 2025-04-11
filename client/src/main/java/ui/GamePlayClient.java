@@ -42,7 +42,7 @@ public class GamePlayClient {
     }
 
     public String redraw(){
-        return "new board";
+        DrawGameBoard()
     }
 
     public String movePiece() throws IOException {
