@@ -12,6 +12,8 @@ import java.net.URI;
 public class WebSocketFacade extends Endpoint{
     Session session;
     NotificationHandler notificationHandler;
+    String savedAuthToken=null;
+    Integer savedGameID=null;
 
     public WebSocketFacade(String url,NotificationHandler notificationHandler) throws Exception {
         try {
@@ -38,21 +40,23 @@ public class WebSocketFacade extends Endpoint{
 
     public void connect(String authToken, Integer gameID) throws IOException {
         UserGameCommand command=new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+        savedAuthToken=authToken;
+        savedGameID=gameID;
         session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 
-    public void makeMove(String authToken,Integer gameID) throws IOException {
-        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,authToken, gameID);
+    public void makeMove() throws IOException {
+        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,savedAuthToken, savedGameID);
         session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 
-    public void leave(String authToken, Integer gameID){
-        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.LEAVE,authToken, gameID);
+    public void leave() throws IOException {
+        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.LEAVE,savedAuthToken, savedGameID);
         session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 
-    public void resign (String authToken, Integer gameID){
-        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.RESIGN,authToken, gameID);
+    public void resign () throws IOException {
+        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.RESIGN, savedAuthToken, savedGameID);
         session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 

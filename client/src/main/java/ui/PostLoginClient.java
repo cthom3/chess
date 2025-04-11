@@ -15,17 +15,14 @@ public class PostLoginClient {
     private final ServerFacade server;
     private final String serverUrl;
     private final Map<Integer,Integer> gameList;
-    private final Map<Integer, ArrayList> connectionsList;
-    private final NotificationHandler notificationHandler;
-
+    private Integer newGameID;
 
     public PostLoginClient(String serverUrl){
         server=new ServerFacade(serverUrl);
         this.serverUrl=serverUrl;
         gameList=new HashMap<>();
         authToken= null;
-        connectionsList =new HashMap<>();
-        notificationHandler=new NotificationHandler();
+        newGameID=null;
     }
 
     public String eval (String input)  {
@@ -59,7 +56,6 @@ public class PostLoginClient {
             var gameName=params[0];
             CreateGameRequest request = new CreateGameRequest(gameName,authToken);
             CreateGameResult result=server.createGame(request);
-            connectionsList.put(result.gameID(),new ArrayList<>());
             return String.format("%s created", gameName);
         }
         return ("Missing Information: need game name");
@@ -94,14 +90,13 @@ public class PostLoginClient {
                return "Wrong order <gameNumber [WHITE | BLACK]>";
            }
            Integer gameID=gameList.get(Integer.parseInt(gameNumber));
+           newGameID=gameID;
            var playerColor=params[1];
            JoinGameRequest request = new JoinGameRequest(playerColor,gameID,authToken);
            JoinGameResult result=server.joinGame(request);
             if (result.statusCode()!=200){
                 return "Spot already full. Choose another spot or create Game.";
             }
-           WebSocketFacade webSocketFacade=new WebSocketFacade(serverUrl, notificationHandler);
-           webSocketFacade.connect(authToken,gameID);
            if (Objects.equals(playerColor, "WHITE")){
                return String.format("Successfully joined game as white player");
            } else {
@@ -115,12 +110,19 @@ public class PostLoginClient {
         if (params.length >=1){
             var gameNumber=params[0];
             Integer gameID=gameList.get(Integer.parseInt(gameNumber));
-            WebSocketFacade webSocketFacade=new WebSocketFacade(serverUrl, notificationHandler);
-            webSocketFacade.connect(authToken,gameID);
+            newGameID=gameID;
             String message= String.format("Successfully joined game as observer");
             return message;
         }
         return ("Missing game number");
+    }
+
+    public Integer getGameID(){
+        return newGameID;
+    }
+
+    public String getAuthToken(){
+        return authToken;
     }
 
     public String help(){

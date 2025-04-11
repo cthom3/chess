@@ -21,12 +21,12 @@ public class ConnectionManager {
         connections.remove(currentUser);
     }
 
-    public void broadcast(String excludeUser, Notification notification) throws IOException {
+    public void broadcast(String excludeUser, String notification) throws IOException {
         ArrayList<Connection> removeList=new ArrayList<Connection>();
         for (var connection: connections.values()){
             if (connection.session.isOpen()){
                 if (!connection.currentUser.equals(excludeUser)){
-                    connection.send(notification.toString());
+                    connection.send(notification);
                 }
             } else{
                 removeList.add(connection);

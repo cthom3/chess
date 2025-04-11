@@ -1,4 +1,7 @@
 package ui;
+import ui.websocket.NotificationHandler;
+import ui.websocket.WebSocketFacade;
+
 import java.util.Scanner;
 
 import static ui.State.*;
@@ -6,19 +9,20 @@ import static ui.State.*;
 public class Repl {
     private final PreLoginClient loginClient;
     private final PostLoginClient loggedinClient;
-    private final GamePlayClient gameClient;
     private State state= SIGNEDOUT;
+    private final NotificationHandler notificationHandler;
+    private final String serverUrl;
 
-    public Repl(String serverUrl){
+    public Repl(String serverUrl) throws Exception {
         loginClient=new PreLoginClient(serverUrl);
+        notificationHandler=new NotificationHandler();
         loggedinClient=new PostLoginClient(serverUrl);
-        gameClient=new GamePlayClient(serverUrl);
+        this.serverUrl=serverUrl;
     }
 
     public void run() {
         System.out.println("Welcome to Chess. Options:");
         System.out.println(loginClient.help());
-
         Scanner scanner = new Scanner(System.in);
         var result="";
         while (!result.equals("quit")){
@@ -61,6 +65,11 @@ public class Repl {
                 }
             } else {
                 try{
+                    String authToken=loggedinClient.getAuthToken();
+                    Integer gameID=loggedinClient.getGameID();
+                    WebSocketFacade webSocketFacade=new WebSocketFacade(serverUrl, notificationHandler);
+                    webSocketFacade.connect(authToken,gameID);
+                    GamePlayClient gameClient=new GamePlayClient(serverUrl, webSocketFacade);
                     result=gameClient.eval(line);
                     System.out.print(result);
                     if (result.contains("left")){
