@@ -1,8 +1,9 @@
 package ui.websocket;
 
 import com.google.gson.Gson;
-import webSocketMessages.Notification;
 import websocket.commands.UserGameCommand;
+import websocket.messages.NotificationHandler;
+import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -15,7 +16,7 @@ public class WebSocketFacade extends Endpoint{
     String savedAuthToken=null;
     Integer savedGameID=null;
 
-    public WebSocketFacade(String url,NotificationHandler notificationHandler) throws Exception {
+    public WebSocketFacade(String url, NotificationHandler notificationHandler) throws Exception {
         try {
             url=url.replace("http", "ws");
             URI socketURI = new URI(url+"/ws");
@@ -25,8 +26,8 @@ public class WebSocketFacade extends Endpoint{
             this.session.addMessageHandler(new MessageHandler.Whole<String>(){
                 @Override
                 public void onMessage(String message){
-                    Notification notification = new Gson().fromJson(message, Notification.class);
-                    notificationHandler.notify(notification);
+                    ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
+                    notificationHandler.toString(notification);
                 }
             });
         } catch (Exception ex){
@@ -42,6 +43,7 @@ public class WebSocketFacade extends Endpoint{
         UserGameCommand command=new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
         savedAuthToken=authToken;
         savedGameID=gameID;
+        System.out.print("Truly Connected");
         session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 

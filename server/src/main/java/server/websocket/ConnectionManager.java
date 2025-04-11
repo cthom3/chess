@@ -5,7 +5,6 @@ import org.eclipse.jetty.websocket.api.Session;
 import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.ArrayList;
-import webSocketMessages.Notification;
 
 public class ConnectionManager {
     public final ConcurrentHashMap<String,Connection> connections= new ConcurrentHashMap<>();
@@ -23,6 +22,7 @@ public class ConnectionManager {
 
     public void broadcast(String excludeUser, String notification) throws IOException {
         ArrayList<Connection> removeList=new ArrayList<Connection>();
+        System.out.print("Got to broadcast function");
         for (var connection: connections.values()){
             if (connection.session.isOpen()){
                 if (!connection.currentUser.equals(excludeUser)){

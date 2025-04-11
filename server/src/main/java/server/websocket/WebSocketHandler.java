@@ -6,7 +6,6 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 
-import webSocketMessages.Notification;
 import websocket.commands.UserGameCommand;
 
 import java.io.IOException;
@@ -32,22 +31,31 @@ public class WebSocketHandler {
 
     private void connect(UserGameCommand command,Session session, String currentUser) throws IOException, DataAccessException {
         Integer gameID=command.getGameID();
+        System.out.print("connections in place");
         if (connections.get(gameID)!=null) {
             connections.get(gameID).add(currentUser, session);
+            System.out.print("User added to connections list");
         } else {
             connections.put(gameID,new ConnectionManager());
+            System.out.print("GameID added to connections HashMap");
         }
         String blackPlayer=gameDAO.getGame(gameID).blackUsername();
         String whitePlayer=gameDAO.getGame(gameID).whiteUsername();
         if (currentUser.equals(blackPlayer)){
             String message=String.format("%s joined the game as BLACK", currentUser);
+            System.out.print("Message prepared");
             connections.get(gameID).broadcast(currentUser,message);
+            System.out.print ("Should have broadcasted");
         } else if (currentUser.equals(whitePlayer)){
             String message=String.format("%s joined the game as WHITE", currentUser);
+            System.out.print("Message prepared");
             connections.get(gameID).broadcast(currentUser,message);
+            System.out.print ("Should have broadcasted");
         } else {
             String message=String.format("%s is observing", currentUser);
+            System.out.print("Message prepared");
             connections.get(gameID).broadcast(currentUser,message);
+            System.out.print ("Should have broadcasted");
         }
     }
 

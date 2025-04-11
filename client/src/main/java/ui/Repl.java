@@ -1,6 +1,6 @@
 package ui;
-import ui.websocket.NotificationHandler;
 import ui.websocket.WebSocketFacade;
+import websocket.messages.NotificationHandler;
 
 import java.util.Scanner;
 
@@ -9,6 +9,7 @@ import static ui.State.*;
 public class Repl {
     private final PreLoginClient loginClient;
     private final PostLoginClient loggedinClient;
+    private GamePlayClient gameClient;
     private State state= SIGNEDOUT;
     private final NotificationHandler notificationHandler;
     private final String serverUrl;
@@ -49,12 +50,33 @@ public class Repl {
                     System.out.print(result);
                     if (result.contains("black")& result.contains("Successfully")){
                         CreateGameBoard.main("black");
+                        String authToken=loggedinClient.getAuthToken();
+                        Integer gameID=loggedinClient.getGameID();
+                        WebSocketFacade webSocketFacade=new WebSocketFacade(serverUrl, notificationHandler);
+                        webSocketFacade.connect(authToken,gameID);
+                        System.out.print("connected");
+                        gameClient=new GamePlayClient(serverUrl, webSocketFacade);
+                        System.out.print("gameClient");
                         setState(INGAME);
                     } else if (result.contains("white")& result.contains("Successfully")) {
                         CreateGameBoard.main("white");
+                        String authToken=loggedinClient.getAuthToken();
+                        Integer gameID=loggedinClient.getGameID();
+                        WebSocketFacade webSocketFacade=new WebSocketFacade(serverUrl, notificationHandler);
+                        webSocketFacade.connect(authToken,gameID);
+                        System.out.print("connected");
+                        gameClient=new GamePlayClient(serverUrl, webSocketFacade);
+                        System.out.print("gameClient");
                         setState(INGAME);
                     } else if (result.contains("observer")& result.contains("Successfully")) {
                         CreateGameBoard.main("white");
+                        String authToken=loggedinClient.getAuthToken();
+                        Integer gameID=loggedinClient.getGameID();
+                        WebSocketFacade webSocketFacade=new WebSocketFacade(serverUrl, notificationHandler);
+                        webSocketFacade.connect(authToken,gameID);
+                        System.out.print("connected");
+                        gameClient=new GamePlayClient(serverUrl, webSocketFacade);
+                        System.out.print("gameClient");
                         setState(INGAME);
                     }
                     if (result.contains("Logout")){
@@ -65,11 +87,6 @@ public class Repl {
                 }
             } else {
                 try{
-                    String authToken=loggedinClient.getAuthToken();
-                    Integer gameID=loggedinClient.getGameID();
-                    WebSocketFacade webSocketFacade=new WebSocketFacade(serverUrl, notificationHandler);
-                    webSocketFacade.connect(authToken,gameID);
-                    GamePlayClient gameClient=new GamePlayClient(serverUrl, webSocketFacade);
                     result=gameClient.eval(line);
                     System.out.print(result);
                     if (result.contains("left")){

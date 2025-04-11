@@ -13,6 +13,7 @@ public class Connection {
     }
 
     public void send(String msg) throws IOException {
+        System.out.println("Getting ready to send back message");
         session.getRemote().sendString(msg);
     }
 }
