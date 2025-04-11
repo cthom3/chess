@@ -114,11 +114,9 @@ public class WebSocketHandler {
                 game.makeMove(wantedMove);
                 String message = String.format("%s moved from __ to __", currentUser);
                 connections.get(gameID).broadcast(currentUser, message);
-                ServerMessage boardMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
-                boardMessage.setLoadGameObject(game.toString());
-                String sendingMessage = new Gson().toJson(boardMessage);
-                System.out.print(sendingMessage);
-                session.getRemote().sendString(sendingMessage);
+                Object newObject=gameDAO.getGame(gameID).game();
+                connections.get(gameID).reloadBoard(null,newObject);
+
             } catch (InvalidMoveException ex){
                 ServerMessage errors=new ServerMessage(ServerMessage.ServerMessageType.ERROR);
                 errors.setErrorMessage(ex.getMessage());

@@ -1,5 +1,6 @@
 package server.websocket;
 
+import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 
 import java.io.IOException;
@@ -33,6 +34,27 @@ public class ConnectionManager {
                 if (!connection.currentUser.equals(excludeUser)){
 //                    System.out.println("Another User");
                     connection.send(notification);
+//                    System.out.println("Was notification sent?");
+                }
+            } else{
+                removeList.add(connection);
+            }
+        }
+        for (var connection: removeList){
+            connections.remove(connection.currentUser);
+        }
+    }
+
+    public void reloadBoard(String excludeUser, Object notification) throws IOException {
+        ArrayList<Connection> removeList=new ArrayList<Connection>();
+//        System.out.print("Got to broadcast function");
+        for (var connection: connections.values()){
+//            System.out.println(connection);
+            if (connection.session.isOpen()){
+//                System.out.println("OpenSession");
+                if (!connection.currentUser.equals(excludeUser)){
+//                    System.out.println("Another User");
+                    connection.reload(notification);
 //                    System.out.println("Was notification sent?");
                 }
             } else{

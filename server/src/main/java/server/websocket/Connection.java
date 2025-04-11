@@ -21,4 +21,12 @@ public class Connection {
         String sendingMessage= new Gson().toJson(newMessage);
         session.getRemote().sendString(sendingMessage);
     }
+
+    public void reload(Object msg) throws IOException {
+//        System.out.println("Getting ready to send back message");
+        ServerMessage boardMessage=new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
+        boardMessage.setLoadGameObject(msg.toString());
+        String sendingMessage = new Gson().toJson(boardMessage);
+        session.getRemote().sendString(sendingMessage);
+    }
 }
