@@ -151,6 +151,7 @@ public class ChessGame {
         if (isInCheck(teamColor)==true){
             return anyMoves(teamColor);
         } else {
+            gameOver=true;
             return noMoves;
         }
     }
@@ -167,6 +168,7 @@ public class ChessGame {
         if (isInCheck(teamColor)!=true) {
             return anyMoves(teamColor);
         } else {
+            gameOver=true;
             return noMoves;
         }
     }
