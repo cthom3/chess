@@ -150,8 +150,20 @@ public class WebSocketHandler {
         }
     }
 
-    private void leave(UserGameCommand command,Session session, String currentUser) throws IOException {
+    private void leave(UserGameCommand command,Session session, String currentUser) throws IOException, DataAccessException {
         Integer gameID=command.getGameID();
+        ChessGame game=gameDAO.getGame(gameID).game();
+        String gameName=gameDAO.getGame(gameID).gameName();
+        String blackPlayer=gameDAO.getGame(gameID).blackUsername();
+        String whitePlayer=gameDAO.getGame(gameID).whiteUsername();
+        if (Objects.equals(currentUser, blackPlayer)){
+            GameData newGameData= new GameData(gameID,whitePlayer,null,gameName,game);
+            gameDAO.updateGame(newGameData);
+        } else if (Objects.equals(currentUser,whitePlayer)){
+            GameData newGameData= new GameData(gameID,null,blackPlayer,gameName,game);
+            gameDAO.updateGame(newGameData);
+        }
+
         connections.get(gameID).remove(currentUser);
         String message=String.format("%s left the game",currentUser);
         connections.get(gameID).broadcast(currentUser, message);
