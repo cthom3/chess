@@ -1,4 +1,5 @@
 package server.websocket;
+import chess.ChessGame;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.ServerMessage;
@@ -22,10 +23,10 @@ public class Connection {
         session.getRemote().sendString(sendingMessage);
     }
 
-    public void reload(Object msg) throws IOException {
+    public void reload(ChessGame msg) throws IOException {
 //        System.out.println("Getting ready to send back message");
         ServerMessage boardMessage=new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
-        boardMessage.setLoadGameObject(msg.toString());
+        boardMessage.setLoadGameObject(msg);
         String sendingMessage = new Gson().toJson(boardMessage);
         session.getRemote().sendString(sendingMessage);
     }

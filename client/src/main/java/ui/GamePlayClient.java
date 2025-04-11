@@ -21,13 +21,28 @@ public class GamePlayClient {
     private final AuthDAO authDAO= new SqlAuthDAO();
     private final Map<String, Integer> positionKey= Map.of("a",1, "b",2, "c",3,
             "d", 4,"e", 5, "f", 6, "g", 7, "h", 8);
+    private String authToken;
+    private String userName;
+    private String blackPlayer;
+    private String whitePlayer;
 
 
-    public GamePlayClient(String serverUrl, WebSocketFacade webSocketFacade, NotificationHandler notificationHandler){
+    public GamePlayClient(String serverUrl, WebSocketFacade webSocketFacade, NotificationHandler notificationHandler) throws DataAccessException {
         server=new ServerFacade(serverUrl);
         this.serverUrl=serverUrl;
         this.webSocketFacade=webSocketFacade;
         this.notificationHandler=notificationHandler;
+        this.authToken=webSocketFacade.getAuthToken();
+        this.userName=authDAO.getAuth(authToken).username();
+        Integer gameID=webSocketFacade.getGameID();
+        blackPlayer=gameDAO.getGame(gameID).blackUsername();
+        whitePlayer=gameDAO.getGame(gameID).whiteUsername();
+        DrawGameBoard drawGameBoard=new DrawGameBoard();
+        if (Objects.equals(userName, blackPlayer)){
+            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "black");
+        } else {
+            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "white");
+        }
     }
 
     public String eval(String input) throws IOException, DataAccessException {
@@ -50,15 +65,11 @@ public class GamePlayClient {
     }
 
     public String redraw() throws DataAccessException {
-        String authToken=webSocketFacade.getAuthToken();
-        String userName=authDAO.getAuth(authToken).username();
-        Integer gameID=webSocketFacade.getGameID();
-        String blackPlayer=gameDAO.getGame(gameID).blackUsername();
-        String whitePlayer=gameDAO.getGame(gameID).whiteUsername();
+        DrawGameBoard drawGameBoard=new DrawGameBoard();
         if (Objects.equals(userName, blackPlayer)){
-            DrawGameBoard.main(notificationHandler.getChessGame(), ChessGame.TeamColor.BLACK.toString());
+            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "black");
         } else {
-            DrawGameBoard.main(notificationHandler.getChessGame(),ChessGame.TeamColor.WHITE.toString());
+            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "white");
         }
         return "";
     }
@@ -70,10 +81,16 @@ public class GamePlayClient {
         var positions=input.split(" ");
         var starting=positions[0].split("");
         var ending=positions[1].split("");
-        ChessPosition start = new ChessPosition(positionKey.get(starting[0]),Integer.parseInt(starting[1]));
-        ChessPosition end= new ChessPosition(positionKey.get(ending[0]),Integer.parseInt(ending[1]));
+        ChessPosition start = new ChessPosition(Integer.parseInt(starting[1]),positionKey.get(starting[0]));
+        ChessPosition end= new ChessPosition(Integer.parseInt(ending[1]),positionKey.get(ending[0]));
         ChessMove move=new ChessMove (start, end, null);
         webSocketFacade.makeMove(move);
+        DrawGameBoard drawGameBoard=new DrawGameBoard();
+        if (Objects.equals(userName, blackPlayer)){
+            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "black");
+        } else {
+            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "white");
+        }
         return "new location";
     }
 

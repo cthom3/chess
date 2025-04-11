@@ -1,5 +1,6 @@
 package server.websocket;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 
@@ -45,7 +46,7 @@ public class ConnectionManager {
         }
     }
 
-    public void reloadBoard(String excludeUser, Object notification) throws IOException {
+    public void reloadBoard(String excludeUser, ChessGame notification) throws IOException {
         ArrayList<Connection> removeList=new ArrayList<Connection>();
 //        System.out.print("Got to broadcast function");
         for (var connection: connections.values()){

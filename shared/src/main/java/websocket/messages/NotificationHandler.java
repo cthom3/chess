@@ -5,7 +5,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 
 public class NotificationHandler {
-    private ChessGame chessgame=null;
+    private ChessGame chessGame=new ChessGame();
 
     public void toString(ServerMessage message){
 //        System.out.println("made it to NotificationHandler");
@@ -16,8 +16,8 @@ public class NotificationHandler {
             String finalMessage=message.getErrorMessage();
             System.out.println(finalMessage);
         } else {
-            Object finalObject=message.getLoadGameObject();
-            ChessGame chessboard= (ChessGame) finalObject;
+            ChessGame finalObject=message.getLoadGameObject();
+            chessGame= finalObject;
             String newString=new Gson().toJson(finalObject);
             System.out.println(newString);
         }
@@ -25,6 +25,7 @@ public class NotificationHandler {
     }
 
     public ChessGame getChessGame(){
-        return chessgame;
+        System.out.println("in NotificationHandler");
+        return chessGame;
     }
 }

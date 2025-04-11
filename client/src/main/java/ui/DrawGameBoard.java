@@ -13,19 +13,18 @@ import static ui.EscapeSequences.*;
 
 public class DrawGameBoard {
     private static final int BOARD_SIZE=8;
-    private static Map<ChessPiece.PieceType,String> pieceToString=Map.of(ChessPiece.PieceType.ROOK, " R ",
+    private Map<ChessPiece.PieceType,String> pieceToString=Map.of(ChessPiece.PieceType.ROOK, " R ",
             ChessPiece.PieceType.KNIGHT, " N ",
             ChessPiece.PieceType.BISHOP," B ",
             ChessPiece.PieceType.QUEEN, " Q ",
             ChessPiece.PieceType.KING, " K ",
-            ChessPiece.PieceType.PAWN, " p ",
-            null, "   ");
-    private static Map<ChessGame.TeamColor,String> colorToString=Map.of(
+            ChessPiece.PieceType.PAWN, " p ");
+    private Map<ChessGame.TeamColor,String> colorToString=Map.of(
             ChessGame.TeamColor.WHITE, SET_TEXT_COLOR_WHITE,
-            ChessGame.TeamColor.BLACK, SET_TEXT_COLOR_BLUE,
-            null, SET_TEXT_COLOR_BLACK);
+            ChessGame.TeamColor.BLACK, SET_TEXT_COLOR_BLUE);
 
-    public static void main(ChessGame game, String playerColor) {
+    public void drawWholeBoard(ChessGame game, String playerColor) {
+        System.out.println("in drawGameBoard");
         ChessBoard board = game.getBoard();
         var out = new PrintStream(System.out, true,StandardCharsets.UTF_8);
         out.print(ERASE_SCREEN);
@@ -37,36 +36,48 @@ public class DrawGameBoard {
         out.print(SET_TEXT_COLOR_WHITE);
     }
 
-    private static void drawChessBoard(PrintStream out, String playerColor, ChessBoard board){
+    private void drawChessBoard(PrintStream out, String playerColor, ChessBoard board){
         ChessPiece[][] squares=board.getBoard();
         if (Objects.equals(playerColor, "black")){
             for (int i=0; i<8;i++){
                 ArrayList<String> piece= new ArrayList<>();
                 ArrayList<String> colors= new ArrayList<>();
-                for (int j=0;j<8;j++){
-                    String letter=pieceToString.get(squares[i][j].getPieceType());
-                    piece.add(letter);
-                    String textColor=colorToString.get(squares[i][j].getTeamColor());
-                    colors.add(textColor);
+                for (int j=7;j>=0;j--){
+                    if (squares[i][j]!=null) {
+                        String letter = pieceToString.get(squares[i][j].getPieceType());
+                        piece.add(letter);
+                        String textColor = colorToString.get(squares[i][j].getTeamColor());
+                        colors.add(textColor);
+                    } else {
+                        piece.add("   ");
+                        colors.add(SET_TEXT_COLOR_BLACK);
+                    }
                 }
-                drawRow(i,piece,colors,playerColor,out);
+//                System.out.println(piece);
+                drawRow(i+1,piece,colors,playerColor,out);
             }
         } else {
-            for (int i=7; i>0;i--){
+            for (int i=7; i>=0;i--){
                 ArrayList<String> piece= new ArrayList<>();
                 ArrayList<String> colors= new ArrayList<>();
-                for (int j=7;j>0;j--){
-                    String letter=pieceToString.get(squares[i][j].getPieceType());
-                    piece.add(letter);
-                    String textColor=colorToString.get(squares[i][j].getTeamColor());
-                    colors.add(textColor);
+                for (int j=0;j<8;j++){
+                    if (squares[i][j]!=null) {
+                        String letter = pieceToString.get(squares[i][j].getPieceType());
+                        piece.add(letter);
+                        String textColor = colorToString.get(squares[i][j].getTeamColor());
+                        colors.add(textColor);
+                    } else {
+                        piece.add("   ");
+                        colors.add(SET_TEXT_COLOR_BLACK);
+                    }
                 }
-                drawRow(i,piece,colors,playerColor,out);
+//                System.out.println(piece);
+                drawRow(i+1,piece,colors,playerColor,out);
             }
         }
     }
 
-    private static void drawRow(int row, ArrayList<String> symbol, ArrayList<String> color,String playerColor,PrintStream out){
+    private void drawRow(int row, ArrayList<String> symbol, ArrayList<String> color,String playerColor,PrintStream out){
         out.print(SET_BG_COLOR_WHITE);
         out.print(SET_TEXT_COLOR_BLACK);
         out.print(" "+row+" ");
@@ -99,7 +110,7 @@ public class DrawGameBoard {
         out.println();
     }
 
-    private static void drawHeaders(PrintStream out, String playerColor){
+    private void drawHeaders(PrintStream out, String playerColor){
         out.print(SET_BG_COLOR_WHITE);
         out.print(SET_TEXT_COLOR_BLACK);
         if (Objects.equals(playerColor, "black")) {

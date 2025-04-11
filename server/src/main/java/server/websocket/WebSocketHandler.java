@@ -64,7 +64,7 @@ public class WebSocketHandler {
                 ServerMessage serverMessage= new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
                 connections.get(gameID).broadcast(currentUser,message);
                 ServerMessage boardMessage=new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
-                boardMessage.setLoadGameObject(gameDAO.getGame(gameID).game().toString());
+                boardMessage.setLoadGameObject(gameDAO.getGame(gameID).game());
                 String sendingMessage= new Gson().toJson(boardMessage);
                 System.out.print(sendingMessage);
                 session.getRemote().sendString(sendingMessage);
@@ -84,7 +84,7 @@ public class WebSocketHandler {
                 //            System.out.print("Message prepared");
                 connections.get(gameID).broadcast(currentUser, message);
                 ServerMessage boardMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
-                boardMessage.setLoadGameObject(gameDAO.getGame(gameID).game().toString());
+                boardMessage.setLoadGameObject(gameDAO.getGame(gameID).game());
                 String sendingMessage = new Gson().toJson(boardMessage);
                 System.out.print(sendingMessage);
                 session.getRemote().sendString(sendingMessage);
@@ -135,9 +135,10 @@ public class WebSocketHandler {
                     game.makeMove(wantedMove);
                     GameData newGameData= new GameData(gameID,whitePlayer,blackPlayer,gameName,game);
                     gameDAO.updateGame(newGameData);
+
                     String message = String.format("%s moved from __ to __", currentUser);
                     connections.get(gameID).broadcast(currentUser, message);
-                    Object newObject = gameDAO.getGame(gameID).game();
+                    ChessGame newObject = gameDAO.getGame(gameID).game();
                     connections.get(gameID).reloadBoard(null, newObject);
 
                 } catch (InvalidMoveException ex) {

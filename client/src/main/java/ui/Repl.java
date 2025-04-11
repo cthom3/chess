@@ -56,13 +56,10 @@ public class Repl {
                         gameClient=new GamePlayClient(serverUrl, webSocketFacade, notificationHandler);
                     }
                     if (result.contains("black")& result.contains("Successfully")){
-                        CreateGameBoard.main("black");
                         setState(INGAME);
                     } else if (result.contains("white")& result.contains("Successfully")) {
-                        CreateGameBoard.main("white");
                         setState(INGAME);
                     } else if (result.contains("observer")& result.contains("Successfully")) {
-                        CreateGameBoard.main("white");
                         setState(INGAME);
                     }
                     if (result.contains("Logout")){
