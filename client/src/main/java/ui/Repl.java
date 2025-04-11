@@ -48,35 +48,21 @@ public class Repl {
                 try {
                     result=loggedinClient.eval(line);
                     System.out.print(result);
-                    if (result.contains("black")& result.contains("Successfully")){
-                        CreateGameBoard.main("black");
+                    if (result.contains("Successfully")){
                         String authToken=loggedinClient.getAuthToken();
                         Integer gameID=loggedinClient.getGameID();
                         WebSocketFacade webSocketFacade=new WebSocketFacade(serverUrl, notificationHandler);
                         webSocketFacade.connect(authToken,gameID);
-                        System.out.print("connected");
                         gameClient=new GamePlayClient(serverUrl, webSocketFacade);
-                        System.out.print("gameClient");
+                    }
+                    if (result.contains("black")& result.contains("Successfully")){
+                        CreateGameBoard.main("black");
                         setState(INGAME);
                     } else if (result.contains("white")& result.contains("Successfully")) {
                         CreateGameBoard.main("white");
-                        String authToken=loggedinClient.getAuthToken();
-                        Integer gameID=loggedinClient.getGameID();
-                        WebSocketFacade webSocketFacade=new WebSocketFacade(serverUrl, notificationHandler);
-                        webSocketFacade.connect(authToken,gameID);
-                        System.out.print("connected");
-                        gameClient=new GamePlayClient(serverUrl, webSocketFacade);
-                        System.out.print("gameClient");
                         setState(INGAME);
                     } else if (result.contains("observer")& result.contains("Successfully")) {
                         CreateGameBoard.main("white");
-                        String authToken=loggedinClient.getAuthToken();
-                        Integer gameID=loggedinClient.getGameID();
-                        WebSocketFacade webSocketFacade=new WebSocketFacade(serverUrl, notificationHandler);
-                        webSocketFacade.connect(authToken,gameID);
-                        System.out.print("connected");
-                        gameClient=new GamePlayClient(serverUrl, webSocketFacade);
-                        System.out.print("gameClient");
                         setState(INGAME);
                     }
                     if (result.contains("Logout")){
