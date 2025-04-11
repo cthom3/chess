@@ -1,5 +1,7 @@
 package server.websocket;
+import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
+import websocket.messages.ServerMessage;
 
 import java.io.IOException;
 
@@ -13,7 +15,10 @@ public class Connection {
     }
 
     public void send(String msg) throws IOException {
-        System.out.println("Getting ready to send back message");
-        session.getRemote().sendString(msg);
+//        System.out.println("Getting ready to send back message");
+        ServerMessage newMessage=new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+        newMessage.setNotification(msg);
+        String sendingMessage= new Gson().toJson(newMessage);
+        session.getRemote().sendString(sendingMessage);
     }
 }

@@ -1,5 +1,6 @@
 package ui.websocket;
 
+import chess.ChessMove;
 import com.google.gson.Gson;
 import websocket.commands.UserGameCommand;
 import websocket.messages.NotificationHandler;
@@ -26,6 +27,8 @@ public class WebSocketFacade extends Endpoint{
             this.session.addMessageHandler(new MessageHandler.Whole<String>(){
                 @Override
                 public void onMessage(String message){
+//                    System.out.println("sent made it WebSocketFacade");
+//                    System.out.println(message);
                     ServerMessage notification = new Gson().fromJson(message, ServerMessage.class);
                     notificationHandler.toString(notification);
                 }
@@ -40,25 +43,25 @@ public class WebSocketFacade extends Endpoint{
     }
 
     public void connect(String authToken, Integer gameID) throws IOException {
-        UserGameCommand command=new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+        UserGameCommand command=new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID, null);
         savedAuthToken=authToken;
         savedGameID=gameID;
-        System.out.print("Truly Connected");
+//        System.out.print("Truly Connected");
         session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 
-    public void makeMove() throws IOException {
-        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,savedAuthToken, savedGameID);
+    public void makeMove(ChessMove move) throws IOException {
+        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.MAKE_MOVE,savedAuthToken, savedGameID, move);
         session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 
     public void leave() throws IOException {
-        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.LEAVE,savedAuthToken, savedGameID);
+        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.LEAVE,savedAuthToken, savedGameID, null);
         session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 
     public void resign () throws IOException {
-        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.RESIGN, savedAuthToken, savedGameID);
+        UserGameCommand command= new UserGameCommand(UserGameCommand.CommandType.RESIGN, savedAuthToken, savedGameID, null);
         session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 

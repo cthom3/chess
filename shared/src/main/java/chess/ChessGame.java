@@ -13,6 +13,7 @@ import java.util.Arrays;
 public class ChessGame {
     TeamColor currentTeam=TeamColor.WHITE;
     ChessBoard currentBoard= new ChessBoard();
+    Boolean gameOver=false;
 
 
     public ChessGame() {
@@ -33,6 +34,14 @@ public class ChessGame {
      */
     public void setTeamTurn(TeamColor team) {
         currentTeam=team;
+    }
+
+    public void setGameState(Boolean state){
+        gameOver=state;
+    }
+
+    public boolean getGameState(){
+        return gameOver;
     }
 
     /**
