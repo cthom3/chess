@@ -103,25 +103,45 @@ public class WebSocketHandler {
         String whitePlayer=gameDAO.getGame(gameID).whiteUsername();
         ChessGame game=gameDAO.getGame(gameID).game();
         String turnPlayer=game.getTeamTurn().toString();
-        if (!Objects.equals(currentUser, blackPlayer) & !Objects.equals(currentUser, whitePlayer)){
+        System.out.println(game.getGameState());
+        if (game.getGameState()==true){
+            Object newObject=gameDAO.getGame(gameID).game();
+            connections.get(gameID).reloadBoard(null,newObject);
+//            ServerMessage errors=new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+//            errors.setErrorMessage("Game Over");
+//            String sendingMessage = new Gson().toJson(errors);
+//            session.getRemote().sendString(sendingMessage);
+        } else {
+            if (!Objects.equals(currentUser, blackPlayer) & !Objects.equals(currentUser, whitePlayer)){
             ServerMessage errors=new ServerMessage(ServerMessage.ServerMessageType.ERROR);
             errors.setErrorMessage("Observer cannot make moves");
             String sendingMessage = new Gson().toJson(errors);
             session.getRemote().sendString(sendingMessage);
-        } else {
-            ChessMove wantedMove=command.getMove();
-            try {
-                game.makeMove(wantedMove);
-                String message = String.format("%s moved from __ to __", currentUser);
-                connections.get(gameID).broadcast(currentUser, message);
-                Object newObject=gameDAO.getGame(gameID).game();
-                connections.get(gameID).reloadBoard(null,newObject);
-
-            } catch (InvalidMoveException ex){
+            } else if (Objects.equals(turnPlayer, "WHITE") & !Objects.equals(currentUser, whitePlayer)){
                 ServerMessage errors=new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-                errors.setErrorMessage(ex.getMessage());
+                errors.setErrorMessage("It is BLACK turn");
                 String sendingMessage = new Gson().toJson(errors);
                 session.getRemote().sendString(sendingMessage);
+            } else if (Objects.equals(turnPlayer, "BLACK") & !Objects.equals(currentUser, blackPlayer)){
+                ServerMessage errors=new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+                errors.setErrorMessage("It is WHITE turn");
+                String sendingMessage = new Gson().toJson(errors);
+                session.getRemote().sendString(sendingMessage);
+            }else {
+                ChessMove wantedMove = command.getMove();
+                try {
+                    game.makeMove(wantedMove);
+                    String message = String.format("%s moved from __ to __", currentUser);
+                    connections.get(gameID).broadcast(currentUser, message);
+                    Object newObject = gameDAO.getGame(gameID).game();
+                    connections.get(gameID).reloadBoard(null, newObject);
+
+                } catch (InvalidMoveException ex) {
+                    ServerMessage errors = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+                    errors.setErrorMessage(ex.getMessage());
+                    String sendingMessage = new Gson().toJson(errors);
+                    session.getRemote().sendString(sendingMessage);
+                }
             }
         }
     }
@@ -135,6 +155,7 @@ public class WebSocketHandler {
 
     private void resign(UserGameCommand command, Session session, String currentUser) throws IOException, DataAccessException {
         Integer gameID=command.getGameID();
+        ChessGame game=gameDAO.getGame(gameID).game();
         String blackPlayer=gameDAO.getGame(gameID).blackUsername();
         String whitePlayer=gameDAO.getGame(gameID).whiteUsername();
         if (!Objects.equals(currentUser, blackPlayer) & !Objects.equals(currentUser, whitePlayer)){
@@ -143,6 +164,7 @@ public class WebSocketHandler {
             String sendingMessage = new Gson().toJson(errors);
             session.getRemote().sendString(sendingMessage);
         } else {
+//            game.setGameState(true);
             String message = String.format("%s has resigned the game", currentUser);
             connections.get(gameID).broadcast(null, message);
         }
