@@ -65,6 +65,14 @@ public class WebSocketFacade extends Endpoint{
         session.getBasicRemote().sendText(new Gson().toJson(command));
     }
 
+    public String getAuthToken() {
+        return savedAuthToken;
+    }
+
+    public Integer getGameID(){
+        return savedGameID;
+    }
+
 
 
 }

@@ -1,9 +1,13 @@
 package ui;
 
 
+import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
+import dataaccess.*;
 import ui.websocket.WebSocketFacade;
+import websocket.commands.UserGameCommand;
+import websocket.messages.NotificationHandler;
 
 import java.io.IOException;
 import java.util.*;
@@ -12,17 +16,21 @@ public class GamePlayClient {
     private final ServerFacade server;
     private final String serverUrl;
     private final WebSocketFacade webSocketFacade;
-    private final Map<String, Integer> positionKey= Map.of("a",1, "b",2, "c",3, "d", 4,"e", 5, "f", 6, "g", 7, "h", 8);
+    private final NotificationHandler notificationHandler;
+    private final GameDAO gameDAO=new SqlGameDAO();
+    private final AuthDAO authDAO= new SqlAuthDAO();
+    private final Map<String, Integer> positionKey= Map.of("a",1, "b",2, "c",3,
+            "d", 4,"e", 5, "f", 6, "g", 7, "h", 8);
 
 
-
-    public GamePlayClient(String serverUrl, WebSocketFacade webSocketFacade){
+    public GamePlayClient(String serverUrl, WebSocketFacade webSocketFacade, NotificationHandler notificationHandler){
         server=new ServerFacade(serverUrl);
         this.serverUrl=serverUrl;
         this.webSocketFacade=webSocketFacade;
+        this.notificationHandler=notificationHandler;
     }
 
-    public String eval(String input) throws IOException {
+    public String eval(String input) throws IOException, DataAccessException {
         var tokens=input.split(" ");
         var command = (tokens.length > 0) ? tokens[0]: "help";
         var params= Arrays.copyOfRange(tokens,1,tokens.length);
@@ -41,8 +49,18 @@ public class GamePlayClient {
         return "left game";
     }
 
-    public String redraw(){
-        DrawGameBoard()
+    public String redraw() throws DataAccessException {
+        String authToken=webSocketFacade.getAuthToken();
+        String userName=authDAO.getAuth(authToken).username();
+        Integer gameID=webSocketFacade.getGameID();
+        String blackPlayer=gameDAO.getGame(gameID).blackUsername();
+        String whitePlayer=gameDAO.getGame(gameID).whiteUsername();
+        if (Objects.equals(userName, blackPlayer)){
+            DrawGameBoard.main(notificationHandler.getChessGame(), ChessGame.TeamColor.BLACK.toString());
+        } else {
+            DrawGameBoard.main(notificationHandler.getChessGame(),ChessGame.TeamColor.WHITE.toString());
+        }
+        return "";
     }
 
     public String movePiece() throws IOException {

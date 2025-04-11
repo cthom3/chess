@@ -16,9 +16,9 @@ public class Repl {
 
     public Repl(String serverUrl) throws Exception {
         loginClient=new PreLoginClient(serverUrl);
-        notificationHandler=new NotificationHandler();
         loggedinClient=new PostLoginClient(serverUrl);
         this.serverUrl=serverUrl;
+        notificationHandler=new NotificationHandler();
     }
 
     public void run() {
@@ -53,7 +53,7 @@ public class Repl {
                         Integer gameID=loggedinClient.getGameID();
                         WebSocketFacade webSocketFacade=new WebSocketFacade(serverUrl, notificationHandler);
                         webSocketFacade.connect(authToken,gameID);
-                        gameClient=new GamePlayClient(serverUrl, webSocketFacade);
+                        gameClient=new GamePlayClient(serverUrl, webSocketFacade, notificationHandler);
                     }
                     if (result.contains("black")& result.contains("Successfully")){
                         CreateGameBoard.main("black");
