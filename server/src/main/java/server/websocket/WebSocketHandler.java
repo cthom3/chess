@@ -3,6 +3,7 @@ package server.websocket;
 import chess.ChessGame;
 import chess.ChessGame.*;
 import chess.ChessMove;
+import chess.ChessPosition;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import dataaccess.*;
@@ -17,6 +18,7 @@ import websocket.messages.ServerMessage;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @WebSocket
@@ -24,6 +26,8 @@ public class WebSocketHandler {
     private final HashMap<Integer,ConnectionManager> connections = new HashMap<>();
     private final GameDAO gameDAO=new SqlGameDAO();
     private final AuthDAO authDAO= new SqlAuthDAO();
+    private final Map<Integer, String> positionKey= Map.of(1,"a",2, "b",3, "c",4,
+            "d", 5,"e", 6, "f", 7, "g", 8, "h");
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException, InvalidMoveException {
@@ -121,12 +125,12 @@ public class WebSocketHandler {
             session.getRemote().sendString(sendingMessage);
             } else if (Objects.equals(turnPlayer, "WHITE") & !Objects.equals(currentUser, whitePlayer)){
                 ServerMessage errors=new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-                errors.setErrorMessage("It is BLACK turn");
+                errors.setErrorMessage("It is WHITE turn");
                 String sendingMessage = new Gson().toJson(errors);
                 session.getRemote().sendString(sendingMessage);
             } else if (Objects.equals(turnPlayer, "BLACK") & !Objects.equals(currentUser, blackPlayer)){
                 ServerMessage errors=new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-                errors.setErrorMessage("It is WHITE turn");
+                errors.setErrorMessage("It is BLACK turn");
                 String sendingMessage = new Gson().toJson(errors);
                 session.getRemote().sendString(sendingMessage);
             }else {
@@ -135,8 +139,11 @@ public class WebSocketHandler {
                     game.makeMove(wantedMove);
                     GameData newGameData= new GameData(gameID,whitePlayer,blackPlayer,gameName,game);
                     gameDAO.updateGame(newGameData);
-
-                    String message = String.format("%s moved from __ to __", currentUser);
+                    ChessPosition startPosition=wantedMove.getStartPosition();
+                    ChessPosition endPosition=wantedMove.getEndPosition();
+                    String start=positionKey.get(startPosition.getColumn())+Integer.toString(startPosition.getRow()+1);
+                    String end=positionKey.get(endPosition.getColumn())+Integer.toString(endPosition.getRow());
+                    String message = String.format("%s moved from %s to %s", currentUser, start, end);
                     connections.get(gameID).broadcast(currentUser, message);
                     ChessGame newObject = gameDAO.getGame(gameID).game();
                     connections.get(gameID).reloadBoard(null, newObject);

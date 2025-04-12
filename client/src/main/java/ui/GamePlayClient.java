@@ -61,6 +61,7 @@ public class GamePlayClient {
     }
     public String leave() throws IOException {
         webSocketFacade.leave();
+        authToken=null;
         return "left game";
     }
 
@@ -74,7 +75,7 @@ public class GamePlayClient {
         return "";
     }
 
-    public String movePiece() throws IOException {
+    public String movePiece() throws IOException, DataAccessException {
         System.out.println("Move piece: <startSquare endSquare>");
         Scanner scanner= new Scanner(System.in);
         String input=scanner.nextLine();
@@ -85,13 +86,14 @@ public class GamePlayClient {
         ChessPosition end= new ChessPosition(Integer.parseInt(ending[1]),positionKey.get(ending[0]));
         ChessMove move=new ChessMove (start, end, null);
         webSocketFacade.makeMove(move);
-        DrawGameBoard drawGameBoard=new DrawGameBoard();
-        if (Objects.equals(userName, blackPlayer)){
-            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "black");
-        } else {
-            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "white");
-        }
-        return "new location";
+//        DrawGameBoard drawGameBoard=new DrawGameBoard();
+//        if (Objects.equals(userName, blackPlayer)){
+//            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "black");
+//        } else {
+//            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "white");
+//        }
+        redraw();
+        return "";
     }
 
     public String resign() throws IOException {
@@ -102,15 +104,31 @@ public class GamePlayClient {
             webSocketFacade.resign();
             return "resigned";
         }
-        return "continue game";
+        return "continuing game";
     }
 
     public String highlight(){
-        return "highlighted";
+        System.out.println("Which piece?: <startSquare>");
+        Scanner scanner= new Scanner(System.in);
+        String position=scanner.nextLine();
+        var starting=position.split("");
+        ChessPosition start = new ChessPosition(Integer.parseInt(starting[1]),positionKey.get(starting[0]));
+        Collection<ChessMove> potentialMoves=notificationHandler.getChessGame().validMoves(start);
+        HighlightGameBoard highlightGameBoard=new HighlightGameBoard();
+        if (Objects.equals(userName, blackPlayer)){
+            highlightGameBoard.highlightAll(notificationHandler.getChessGame(), potentialMoves,"black");
+        } else {
+            highlightGameBoard.highlightAll(notificationHandler.getChessGame(), potentialMoves,"white");
+        }
+        return "";
     }
 
     public String help(){
         return """
+                - redraw
+                - move
+                - highlight
+                - resign
                 - leave
                 - quit
                 - help
