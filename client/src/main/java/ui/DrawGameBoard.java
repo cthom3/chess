@@ -37,7 +37,7 @@ public class DrawGameBoard {
 
     private void drawChessBoard(PrintStream out, String playerColor, ChessBoard board){
         ChessPiece[][] squares=board.getBoard();
-        if (Objects.equals(playerColor, "black")){
+        if (Objects.equals(playerColor, "BLACK")){
             for (int i=0; i<8;i++){
                 ArrayList<String> piece= new ArrayList<>();
                 ArrayList<String> colors= new ArrayList<>();
@@ -80,7 +80,7 @@ public class DrawGameBoard {
         out.print(SET_BG_COLOR_WHITE);
         out.print(SET_TEXT_COLOR_BLACK);
         out.print(" "+row+" ");
-        if (Objects.equals(playerColor, "black")){
+        if (Objects.equals(playerColor, "BLACK")){
             for (int boardCol = 0; boardCol<BOARD_SIZE; ++boardCol) {
                 if (boardCol %2==(row%2)){
                     out.print(SET_BG_COLOR_DARK_GREY);
@@ -112,7 +112,7 @@ public class DrawGameBoard {
     private void drawHeaders(PrintStream out, String playerColor){
         out.print(SET_BG_COLOR_WHITE);
         out.print(SET_TEXT_COLOR_BLACK);
-        if (Objects.equals(playerColor, "black")) {
+        if (Objects.equals(playerColor, "BLACK")) {
             String[] headers = {"   ", " h ", " g ", " f ", " e ", " d ", " c ", " b ", " a ","   "};
             for (int boardCol = 0; boardCol<BOARD_SIZE+2; ++boardCol) {
                 out.print((headers[boardCol]));

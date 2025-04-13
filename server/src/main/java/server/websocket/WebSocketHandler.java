@@ -64,23 +64,19 @@ public class WebSocketHandler {
             String whitePlayer=gameDAO.getGame(gameID).whiteUsername();
             if (currentUser.equals(blackPlayer)){
                 String message=String.format("%s joined the game as BLACK", currentUser);
-    //            System.out.print("Message prepared");
                 ServerMessage serverMessage= new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
                 connections.get(gameID).broadcast(currentUser,message);
                 ServerMessage boardMessage=new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
                 boardMessage.setLoadGameObject(gameDAO.getGame(gameID).game());
                 String sendingMessage= new Gson().toJson(boardMessage);
                 session.getRemote().sendString(sendingMessage);
-    //            System.out.print ("Should have broadcasted");
             } else if (currentUser.equals(whitePlayer)){
                 String message=String.format("%s joined the game as WHITE", currentUser);
-    //            System.out.print("Message prepared");
                 connections.get(gameID).broadcast(currentUser,message);
                 ServerMessage boardMessage=new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
                 boardMessage.setLoadGameObject(gameDAO.getGame(gameID).game());
                 String sendingMessage= new Gson().toJson(boardMessage);
                 session.getRemote().sendString(sendingMessage);
-    //            System.out.print ("Should have broadcasted");
             } else {
                 String message = String.format("%s is observing", currentUser);
                 //            System.out.print("Message prepared");
@@ -89,7 +85,6 @@ public class WebSocketHandler {
                 boardMessage.setLoadGameObject(gameDAO.getGame(gameID).game());
                 String sendingMessage = new Gson().toJson(boardMessage);
                 session.getRemote().sendString(sendingMessage);
-                //            System.out.print ("Should have broadcasted");
             }
         } else {
             ServerMessage errors=new ServerMessage(ServerMessage.ServerMessageType.ERROR);

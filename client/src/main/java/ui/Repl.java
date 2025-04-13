@@ -11,7 +11,7 @@ public class Repl {
     private final PostLoginClient loggedinClient;
     private GamePlayClient gameClient;
     private State state= SIGNEDOUT;
-    private final NotificationHandler notificationHandler;
+    private NotificationHandler notificationHandler;
     private final String serverUrl;
     private String authToken=null;
     private Integer gameID=null;

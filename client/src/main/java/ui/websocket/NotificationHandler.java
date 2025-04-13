@@ -11,12 +11,12 @@ public class NotificationHandler {
     private ChessGame chessGame=new ChessGame();
     private String playerColor;
 
-    public void NotificationHandler (String playerColor){
+    public NotificationHandler (String playerColor){
         this.playerColor=playerColor;
     }
 
     public void toString(ServerMessage message){
-//        System.out.println("made it to NotificationHandler");
+//        System.out.println();
         if (message.getServerMessageType().equals(ServerMessage.ServerMessageType.NOTIFICATION)){
             String finalMessage=message.getNotificationMessage();
             System.out.println(finalMessage);
@@ -29,8 +29,7 @@ public class NotificationHandler {
             String newString=new Gson().toJson(finalObject);
             DrawGameBoard drawGameBoard=new DrawGameBoard();
             drawGameBoard.drawWholeBoard(chessGame, playerColor);
-
-            System.out.println("saved");
+//            System.out.println("saved");
         }
 
     }

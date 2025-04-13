@@ -30,7 +30,7 @@ public class GamePlayClient {
         this.playerColor=playerColor;
 
         DrawGameBoard drawGameBoard=new DrawGameBoard();
-        if (Objects.equals(playerColor, "black")){
+        if (Objects.equals(playerColor, "BLACK")){
             drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "black");
         } else {
             drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "white");
@@ -59,7 +59,7 @@ public class GamePlayClient {
 
     public String redraw()  {
         DrawGameBoard drawGameBoard=new DrawGameBoard();
-        if (Objects.equals(playerColor, "black")){
+        if (Objects.equals(playerColor, "BLACK")){
             drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "black");
         } else {
             drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "white");
@@ -78,12 +78,12 @@ public class GamePlayClient {
         ChessPosition end= new ChessPosition(Integer.parseInt(ending[1].trim()),positionKey.get(ending[0].trim()));
         ChessMove move=new ChessMove (start, end, null);
         webSocketFacade.makeMove(move);
-        DrawGameBoard drawGameBoard=new DrawGameBoard();
-        if (Objects.equals(playerColor, "black")){
-            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "black");
-        } else {
-            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "white");
-        }
+//        DrawGameBoard drawGameBoard=new DrawGameBoard();
+//        if (Objects.equals(playerColor, "BLACK")){
+//            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "black");
+//        } else {
+//            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "white");
+//        }
 //        redraw();
         return "";
     }
@@ -107,10 +107,10 @@ public class GamePlayClient {
         ChessPosition start = new ChessPosition(Integer.parseInt(starting[1]),positionKey.get(starting[0]));
         Collection<ChessMove> potentialMoves=notificationHandler.getChessGame().validMoves(start);
         HighlightGameBoard highlightGameBoard=new HighlightGameBoard();
-        if (Objects.equals(playerColor, "black")){
-            highlightGameBoard.highlightAll(notificationHandler.getChessGame(), potentialMoves,"black");
+        if (Objects.equals(playerColor, "BLACK")){
+            highlightGameBoard.highlightAll(notificationHandler.getChessGame(), potentialMoves,start,"black");
         } else {
-            highlightGameBoard.highlightAll(notificationHandler.getChessGame(), potentialMoves,"white");
+            highlightGameBoard.highlightAll(notificationHandler.getChessGame(), potentialMoves,start,"white");
         }
         return "";
     }

@@ -23,7 +23,7 @@ public class HighlightGameBoard {
             ChessGame.TeamColor.WHITE, SET_TEXT_COLOR_WHITE,
             ChessGame.TeamColor.BLACK, SET_TEXT_COLOR_BLUE);
 
-    public void highlightAll(ChessGame game, Collection<ChessMove> moves, String playerColor) {
+    public void highlightAll(ChessGame game, Collection<ChessMove> moves, ChessPosition start,String playerColor) {
         ChessBoard board = game.getBoard();
         ArrayList<ChessPosition> endPositions= new ArrayList<>();
         for (ChessMove move:moves){
@@ -33,13 +33,13 @@ public class HighlightGameBoard {
         out.print(ERASE_SCREEN);
         out.println();
         drawHeaders(out,playerColor);
-        drawChessBoard(out,playerColor,board, endPositions);
+        drawChessBoard(out,playerColor,board, endPositions, start);
         drawHeaders(out, playerColor);
         out.print(SET_BG_COLOR_BLACK);
         out.print(SET_TEXT_COLOR_WHITE);
     }
 
-    private void drawChessBoard(PrintStream out, String playerColor, ChessBoard board, ArrayList<ChessPosition> endPositions){
+    private void drawChessBoard(PrintStream out, String playerColor, ChessBoard board, ArrayList<ChessPosition> endPositions, ChessPosition start){
         ChessPiece[][] squares=board.getBoard();
         if (Objects.equals(playerColor, "black")){
             for (int i=0; i<8;i++){
@@ -57,7 +57,7 @@ public class HighlightGameBoard {
                     }
                 }
 //                System.out.println(piece);
-                drawRow(i+1,piece,colors,playerColor,endPositions,out);
+                drawRow(i+1,piece,colors,playerColor,endPositions,start,out);
             }
         } else {
             for (int i=7; i>=0;i--){
@@ -75,18 +75,22 @@ public class HighlightGameBoard {
                     }
                 }
 //                System.out.println(piece);
-                drawRow(i+1,piece,colors,playerColor,endPositions,out);
+                drawRow(i+1,piece,colors,playerColor,endPositions,start,out);
             }
         }
     }
 
-    private void drawRow(int row, ArrayList<String> symbol, ArrayList<String> color,String playerColor,ArrayList<ChessPosition> endPositions,PrintStream out){
+    private void drawRow(int row, ArrayList<String> symbol, ArrayList<String> color,String playerColor,ArrayList<ChessPosition> endPositions,ChessPosition start,PrintStream out){
         out.print(SET_BG_COLOR_WHITE);
         out.print(SET_TEXT_COLOR_BLACK);
         out.print(" "+row+" ");
-        if (Objects.equals(playerColor, "black")){
+        if (Objects.equals(playerColor, "BLACK")){
             for (int boardCol = 7; boardCol>=0; boardCol--) {
-                if (endPositions.contains(new ChessPosition(row,boardCol+1))){
+                if (Objects.equals(new ChessPosition(row,boardCol+1),start)){
+                    out.print(SET_BG_COLOR_RED);
+                    out.print(color.get(boardCol));
+                    out.print(symbol.get(boardCol));
+                } else if (endPositions.contains(new ChessPosition(row,boardCol+1))){
                     if (boardCol % 2 == (row % 2)) {
                         out.print(SET_BG_COLOR_DARK_GREEN);
                     } else {
@@ -106,7 +110,11 @@ public class HighlightGameBoard {
             }
         } else {
             for (int boardCol = 0; boardCol<BOARD_SIZE; ++boardCol) {
-                if (endPositions.contains(new ChessPosition(row,boardCol+1))) {
+                if (Objects.equals(new ChessPosition(row,boardCol+1),start)){
+                    out.print(SET_BG_COLOR_YELLOW);
+                    out.print(color.get(boardCol));
+                    out.print(symbol.get(boardCol));
+                } else if (endPositions.contains(new ChessPosition(row,boardCol+1))) {
                     if (boardCol % 2 == (row % 2)) {
                         out.print(SET_BG_COLOR_GREEN);
                     } else {
@@ -136,7 +144,7 @@ public class HighlightGameBoard {
     private void drawHeaders(PrintStream out, String playerColor){
         out.print(SET_BG_COLOR_WHITE);
         out.print(SET_TEXT_COLOR_BLACK);
-        if (Objects.equals(playerColor, "black")) {
+        if (Objects.equals(playerColor, "BLACK")) {
             String[] headers = {"   ", " h ", " g ", " f ", " e ", " d ", " c ", " b ", " a ","   "};
             for (int boardCol = 0; boardCol<BOARD_SIZE+2; ++boardCol) {
                 out.print((headers[boardCol]));
