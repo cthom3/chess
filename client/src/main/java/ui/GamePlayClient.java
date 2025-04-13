@@ -2,6 +2,7 @@ package ui;
 
 
 import chess.ChessMove;
+import chess.ChessPiece;
 import chess.ChessPosition;
 import ui.websocket.WebSocketFacade;
 import ui.websocket.NotificationHandler;
@@ -68,15 +69,21 @@ public class GamePlayClient {
     }
 
     public String movePiece() throws IOException {
-        System.out.println("Move piece: <startSquare endSquare>");
+        System.out.println("Move piece: <startSquare endSquare optional:promotionPiece>");
         Scanner scanner= new Scanner(System.in);
         String input=scanner.nextLine();
-        var positions=input.split(" ");
+        String[] positions=input.split(" ");
         var starting=positions[0].split("");
         var ending=positions[1].split("");
         ChessPosition start = new ChessPosition(Integer.parseInt(starting[1].trim()),positionKey.get(starting[0].trim()));
         ChessPosition end= new ChessPosition(Integer.parseInt(ending[1].trim()),positionKey.get(ending[0].trim()));
-        ChessMove move=new ChessMove (start, end, null);
+        if (positions.length>2){
+            ChessPiece.PieceType promotion= ChessPiece.PieceType.valueOf(positions[3]);
+            ChessMove move=new ChessMove (start, end, promotion);
+        } else {
+            ChessMove move=new ChessMove (start, end, null);
+        }
+
         webSocketFacade.makeMove(move);
 //        DrawGameBoard drawGameBoard=new DrawGameBoard();
 //        if (Objects.equals(playerColor, "BLACK")){
