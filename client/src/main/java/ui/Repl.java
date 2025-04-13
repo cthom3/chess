@@ -1,6 +1,6 @@
 package ui;
 import ui.websocket.WebSocketFacade;
-import websocket.messages.NotificationHandler;
+import ui.websocket.NotificationHandler;
 
 import java.util.Scanner;
 
@@ -13,12 +13,14 @@ public class Repl {
     private State state= SIGNEDOUT;
     private final NotificationHandler notificationHandler;
     private final String serverUrl;
+    private String authToken=null;
+    private Integer gameID=null;
+    private String playerColor=null;
 
     public Repl(String serverUrl) throws Exception {
         loginClient=new PreLoginClient(serverUrl);
-        loggedinClient=new PostLoginClient(serverUrl);
+        loggedinClient=new PostLoginClient(serverUrl, this);
         this.serverUrl=serverUrl;
-        notificationHandler=new NotificationHandler();
     }
 
     public void run() {
@@ -51,9 +53,10 @@ public class Repl {
                     if (result.contains("Successfully")){
                         String authToken=loggedinClient.getAuthToken();
                         Integer gameID=loggedinClient.getGameID();
+                        notificationHandler=new NotificationHandler(playerColor);
                         WebSocketFacade webSocketFacade=new WebSocketFacade(serverUrl, notificationHandler);
                         webSocketFacade.connect(authToken,gameID);
-                        gameClient=new GamePlayClient(serverUrl, webSocketFacade, notificationHandler);
+                        gameClient=new GamePlayClient(serverUrl, webSocketFacade, notificationHandler, playerColor);
                     }
                     if (result.contains("black")& result.contains("Successfully")){
                         setState(INGAME);
@@ -90,5 +93,17 @@ public class Repl {
 
     public void setState(State newState){
         this.state=newState;
+    }
+
+    public void sendAuthToken(String authToken){
+        this.authToken=authToken;
+    }
+
+    public void sendGameID(Integer gameID){
+        this.gameID=gameID;
+    }
+
+    public void sendPlayerColor(String playerColor){
+        this.playerColor=playerColor;
     }
 }

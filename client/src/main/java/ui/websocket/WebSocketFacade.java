@@ -3,7 +3,6 @@ package ui.websocket;
 import chess.ChessMove;
 import com.google.gson.Gson;
 import websocket.commands.UserGameCommand;
-import websocket.messages.NotificationHandler;
 import websocket.messages.ServerMessage;
 
 import javax.websocket.*;

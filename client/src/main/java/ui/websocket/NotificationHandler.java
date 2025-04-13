@@ -1,11 +1,19 @@
-package websocket.messages;
+package ui.websocket;
 
-import chess.ChessBoard;
 import chess.ChessGame;
 import com.google.gson.Gson;
+import ui.DrawGameBoard;
+import websocket.messages.ServerMessage;
+
+import java.util.Objects;
 
 public class NotificationHandler {
     private ChessGame chessGame=new ChessGame();
+    private String playerColor;
+
+    public void NotificationHandler (String playerColor){
+        this.playerColor=playerColor;
+    }
 
     public void toString(ServerMessage message){
 //        System.out.println("made it to NotificationHandler");
@@ -19,6 +27,9 @@ public class NotificationHandler {
             ChessGame finalObject=message.getLoadGameObject();
             chessGame= finalObject;
             String newString=new Gson().toJson(finalObject);
+            DrawGameBoard drawGameBoard=new DrawGameBoard();
+            drawGameBoard.drawWholeBoard(chessGame, playerColor);
+
             System.out.println("saved");
         }
 
@@ -29,8 +40,8 @@ public class NotificationHandler {
         return chessGame;
     }
 
-    public void setChessGame(ChessGame game){
-        System.out.println("Set game");
-        chessGame=game;
-    }
+//    public void setChessGame(ChessGame game){
+//        System.out.println("Set game");
+//        chessGame=game;
+//    }
 }

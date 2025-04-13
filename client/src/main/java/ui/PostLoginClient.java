@@ -13,13 +13,15 @@ public class PostLoginClient {
     private final String serverUrl;
     private final Map<Integer,Integer> gameList;
     private Integer newGameID;
+    private Repl repl;
 
-    public PostLoginClient(String serverUrl){
+    public PostLoginClient(String serverUrl, Repl repl){
         server=new ServerFacade(serverUrl);
         this.serverUrl=serverUrl;
         gameList=new HashMap<>();
         authToken= null;
         newGameID=null;
+        this.repl=repl;
     }
 
     public String eval (String input)  {
@@ -88,7 +90,9 @@ public class PostLoginClient {
            }
            Integer gameID=gameList.get(Integer.parseInt(gameNumber));
            newGameID=gameID;
+           repl.sendGameID(newGameID);
            var playerColor=params[1];
+           repl.sendPlayerColor(playerColor);
            JoinGameRequest request = new JoinGameRequest(playerColor,gameID,authToken);
            JoinGameResult result=server.joinGame(request);
             if (result.statusCode()!=200){
@@ -108,6 +112,8 @@ public class PostLoginClient {
             var gameNumber=params[0];
             Integer gameID=gameList.get(Integer.parseInt(gameNumber));
             newGameID=gameID;
+            repl.sendGameID(newGameID);
+            repl.sendPlayerColor("observer");
             String message= String.format("Successfully joined game as observer");
             return message;
         }
@@ -134,8 +140,9 @@ public class PostLoginClient {
                 """;
     }
 
-    public void setAuthToken(String newAuthToken){
+    public void setAuthToken(String newAuthToken) {
         this.authToken=newAuthToken;
+        repl.sendAuthToken(newAuthToken);
     }
 
 

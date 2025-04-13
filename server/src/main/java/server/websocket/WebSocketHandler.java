@@ -70,7 +70,6 @@ public class WebSocketHandler {
                 ServerMessage boardMessage=new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
                 boardMessage.setLoadGameObject(gameDAO.getGame(gameID).game());
                 String sendingMessage= new Gson().toJson(boardMessage);
-                System.out.print(sendingMessage);
                 session.getRemote().sendString(sendingMessage);
     //            System.out.print ("Should have broadcasted");
             } else if (currentUser.equals(whitePlayer)){
@@ -80,7 +79,6 @@ public class WebSocketHandler {
                 ServerMessage boardMessage=new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
                 boardMessage.setLoadGameObject(gameDAO.getGame(gameID).game());
                 String sendingMessage= new Gson().toJson(boardMessage);
-                System.out.print(sendingMessage);
                 session.getRemote().sendString(sendingMessage);
     //            System.out.print ("Should have broadcasted");
             } else {
@@ -90,7 +88,6 @@ public class WebSocketHandler {
                 ServerMessage boardMessage = new ServerMessage(ServerMessage.ServerMessageType.LOAD_GAME);
                 boardMessage.setLoadGameObject(gameDAO.getGame(gameID).game());
                 String sendingMessage = new Gson().toJson(boardMessage);
-                System.out.print(sendingMessage);
                 session.getRemote().sendString(sendingMessage);
                 //            System.out.print ("Should have broadcasted");
             }
@@ -109,7 +106,7 @@ public class WebSocketHandler {
         String whitePlayer=gameDAO.getGame(gameID).whiteUsername();
         ChessGame game=gameDAO.getGame(gameID).game();
         String turnPlayer=game.getTeamTurn().toString();
-        System.out.println(game.getGameState());
+//        System.out.println(game.getGameState());
         if (game.getGameState()==true){
 //            Object newObject=gameDAO.getGame(gameID).game();
 //            connections.get(gameID).reloadBoard(null,newObject);
@@ -119,10 +116,10 @@ public class WebSocketHandler {
             session.getRemote().sendString(sendingMessage);
         } else {
             if (!Objects.equals(currentUser, blackPlayer) & !Objects.equals(currentUser, whitePlayer)){
-            ServerMessage errors=new ServerMessage(ServerMessage.ServerMessageType.ERROR);
-            errors.setErrorMessage("Observer cannot make moves");
-            String sendingMessage = new Gson().toJson(errors);
-            session.getRemote().sendString(sendingMessage);
+                ServerMessage errors=new ServerMessage(ServerMessage.ServerMessageType.ERROR);
+                errors.setErrorMessage("Observer cannot make moves");
+                String sendingMessage = new Gson().toJson(errors);
+                session.getRemote().sendString(sendingMessage);
             } else if (Objects.equals(turnPlayer, "WHITE") & !Objects.equals(currentUser, whitePlayer)){
                 ServerMessage errors=new ServerMessage(ServerMessage.ServerMessageType.ERROR);
                 errors.setErrorMessage("It is WHITE turn");
@@ -141,8 +138,9 @@ public class WebSocketHandler {
                     gameDAO.updateGame(newGameData);
                     ChessPosition startPosition=wantedMove.getStartPosition();
                     ChessPosition endPosition=wantedMove.getEndPosition();
-                    String start=positionKey.get(startPosition.getColumn())+Integer.toString(startPosition.getRow()+1);
-                    String end=positionKey.get(endPosition.getColumn())+Integer.toString(endPosition.getRow());
+//                    System.out.println(positionKey.get(startPosition.getColumn()+1));
+                    String start=String.join("",positionKey.get(startPosition.getColumn()+1),Integer.toString(startPosition.getRow()+1));
+                    String end=String.join("",positionKey.get(endPosition.getColumn()+1),Integer.toString(endPosition.getRow()+1));
                     String message = String.format("%s moved from %s to %s", currentUser, start, end);
                     connections.get(gameID).broadcast(currentUser, message);
                     ChessGame newObject = gameDAO.getGame(gameID).game();
