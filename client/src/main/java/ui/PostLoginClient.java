@@ -95,9 +95,12 @@ public class PostLoginClient {
            repl.sendPlayerColor(playerColor);
            JoinGameRequest request = new JoinGameRequest(playerColor,gameID,authToken);
            JoinGameResult result=server.joinGame(request);
-            if (result.statusCode()!=200){
-                return "Spot already full. Choose another spot or create Game.";
+           if (!Objects.equals(playerColor,"WHITE") & !Objects.equals(playerColor, "BLACK")){
+               return "Not a valid player color. Try again";
             }
+           if (result.statusCode()!=200){
+               return "Spot already full. Choose another spot or create Game.";
+           }
            if (Objects.equals(playerColor, "WHITE")){
                return String.format("Successfully joined game as white player");
            } else {

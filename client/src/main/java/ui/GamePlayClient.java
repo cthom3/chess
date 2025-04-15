@@ -30,12 +30,12 @@ public class GamePlayClient {
         Integer gameID=webSocketFacade.getGameID();
         this.playerColor=playerColor;
 
-        DrawGameBoard drawGameBoard=new DrawGameBoard();
-        if (Objects.equals(playerColor, "BLACK")){
-            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "black");
-        } else {
-            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "white");
-        }
+//        DrawGameBoard drawGameBoard=new DrawGameBoard();
+//        if (Objects.equals(playerColor, "BLACK")){
+//            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "black");
+//        } else {
+//            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "white");
+//        }
     }
 
     public String eval(String input) throws IOException {
@@ -73,18 +73,28 @@ public class GamePlayClient {
         Scanner scanner= new Scanner(System.in);
         String input=scanner.nextLine();
         String[] positions=input.split(" ");
+        if (positions.length < 2){
+            return "Missing information. Try again";
+        }
         var starting=positions[0].split("");
         var ending=positions[1].split("");
+        if (!positionKey.containsKey(starting[0]) | !positionKey.containsKey(ending[0])){
+            return "Not a valid square. Enter (a-h)(1-8) for each position";
+        }
+        if (!starting[1].matches("[1-8]") | !ending[1].matches("[1-8]") ){
+            return "Not a valid square. Enter (a-h)(1-8) for each position";
+        }
         ChessPosition start = new ChessPosition(Integer.parseInt(starting[1].trim()),positionKey.get(starting[0].trim()));
         ChessPosition end= new ChessPosition(Integer.parseInt(ending[1].trim()),positionKey.get(ending[0].trim()));
         if (positions.length>2){
-            ChessPiece.PieceType promotion= ChessPiece.PieceType.valueOf(positions[3]);
+            ChessPiece.PieceType promotion= ChessPiece.PieceType.valueOf(positions[2]);
             ChessMove move=new ChessMove (start, end, promotion);
+            webSocketFacade.makeMove(move);
         } else {
             ChessMove move=new ChessMove (start, end, null);
+            webSocketFacade.makeMove(move);
         }
 
-        webSocketFacade.makeMove(move);
 //        DrawGameBoard drawGameBoard=new DrawGameBoard();
 //        if (Objects.equals(playerColor, "BLACK")){
 //            drawGameBoard.drawWholeBoard(notificationHandler.getChessGame(), "black");
@@ -111,6 +121,12 @@ public class GamePlayClient {
         Scanner scanner= new Scanner(System.in);
         String position=scanner.nextLine();
         var starting=position.split("");
+        if (!positionKey.containsKey(starting[0])){
+            return "Not a valid square. Enter (a-h)(1-8) for each position";
+        }
+        if (!starting[1].matches("[1-8]")){
+            return "Not a valid square. Enter (a-h)(1-8) for each position";
+        }
         ChessPosition start = new ChessPosition(Integer.parseInt(starting[1]),positionKey.get(starting[0]));
         Collection<ChessMove> potentialMoves=notificationHandler.getChessGame().validMoves(start);
         HighlightGameBoard highlightGameBoard=new HighlightGameBoard();

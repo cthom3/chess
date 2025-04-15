@@ -140,7 +140,28 @@ public class WebSocketHandler {
                     connections.get(gameID).broadcast(currentUser, message);
                     ChessGame newObject = gameDAO.getGame(gameID).game();
                     connections.get(gameID).reloadBoard(null, newObject);
-
+                    TeamColor playerColor=null;
+                    System.out.println(playerColor);
+                    if (Objects.equals(turnPlayer, "BLACK")){
+                        System.out.println("WHITE");
+                        playerColor=TeamColor.WHITE;
+                    } else {
+                        System.out.println("WHITE");
+                        playerColor=TeamColor.BLACK;
+                    }
+                    if (newObject.isInCheckmate(playerColor)){
+                        System.out.println("checkmate");
+                        String messageCheckmate = String.format ("%s is in checkmate", currentUser);
+                        connections.get(gameID).broadcast(null, messageCheckmate);
+                    } else if (newObject.isInStalemate(playerColor)){
+                        System.out.println("stalemate");
+                        String messageStalemate="Stalemate. Game over.";
+                        connections.get(gameID).broadcast(null,messageStalemate);
+                    } else if (newObject.isInCheck(playerColor)){
+                        System.out.println("check");
+                        String messageCheck=String.format("%s is in check", currentUser);
+                        connections.get(gameID).broadcast(null,messageCheck);
+                    }
                 } catch (InvalidMoveException ex) {
                     ServerMessage errors = new ServerMessage(ServerMessage.ServerMessageType.ERROR);
                     errors.setErrorMessage(ex.getMessage());

@@ -35,7 +35,6 @@ public class NotificationHandler {
     }
 
     public ChessGame getChessGame(){
-        System.out.println("in NotificationHandler");
         return chessGame;
     }
 
